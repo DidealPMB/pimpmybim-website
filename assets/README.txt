@@ -1,0 +1,1 @@
+Logo asset will be stored here.
