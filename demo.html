@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Pimp My BIM — démonstration produit.">
+  <title>Pimp My BIM — Product Demo</title>
+  <link rel="stylesheet" href="style.css?v=20260901-1">
+  <link rel="stylesheet" href="theme-v2.css?v=20260901-1">
+  <link rel="stylesheet" href="pro-pages.css?v=20260901-1">
+  <style>
+    .demoPage{padding:145px 0 110px;min-height:100vh;background:radial-gradient(circle at 75% 18%,color-mix(in srgb,var(--lime) 12%,transparent),transparent 32%)}
+    .demoHead{max-width:850px;margin:0 auto 34px;text-align:center}
+    .demoHead h1{font-size:clamp(44px,6vw,82px);line-height:.98;letter-spacing:-.055em;margin:14px 0 18px}
+    .demoHead p{font-size:18px;line-height:1.7;color:var(--muted);max-width:700px;margin:0 auto}
+    .demoFrame{max-width:1180px;margin:0 auto;border:1px solid var(--line);border-radius:26px;overflow:hidden;background:var(--graphite);box-shadow:0 34px 100px rgba(20,30,16,.18)}
+    .demoBar{height:54px;padding:0 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #263126;background:#101510;color:#b9c4b5;font-size:12px;font-weight:800;letter-spacing:.04em}
+    .demoBar strong{color:var(--lime)}
+    .demoFrame video{display:block;width:100%;height:auto;background:#050705;aspect-ratio:16/9;object-fit:contain}
+    .demoActions{display:flex;justify-content:center;gap:12px;margin-top:30px;flex-wrap:wrap}
+    @media(max-width:700px){.demoPage{padding-top:115px}.demoFrame{border-radius:18px}.demoBar{font-size:10px}.demoHead p{font-size:15px}}
+  </style>
+</head>
+<body>
+  <header></header>
+  <main class="demoPage">
+    <div class="wrap">
+      <div class="demoHead reveal">
+        <div class="kicker">PMB · PRODUCT DEMO</div>
+        <h1>Pimp My BIM en action.</h1>
+        <p>Une démonstration du produit directement dans le navigateur. Lancez la vidéo pour découvrir le workflow PMB.</p>
+      </div>
+      <div class="demoFrame reveal">
+        <div class="demoBar"><span>PMB-PI_DEMO</span><strong>DEMO</strong></div>
+        <video controls playsinline preload="metadata">
+          <source src="assets/videos/PMB-PI_DEMO.mp4" type="video/mp4">
+          Votre navigateur ne prend pas en charge la lecture vidéo HTML5.
+        </video>
+      </div>
+      <div class="demoActions reveal">
+        <a class="btn primary" href="downloads.html">Télécharger PMB →</a>
+        <a class="btn" href="index.html">Retour au site</a>
+      </div>
+    </div>
+  </main>
+  <script src="app.js?v=20260902-i18n1"></script>
+</body>
+</html>
