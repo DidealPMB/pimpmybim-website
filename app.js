@@ -1,4 +1,4 @@
-(()=>{const id='G-KD5YH9Q4V8';if(window.__pmbGaInstalled)return;window.__pmbGaInstalled=true;const s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+id;document.head.appendChild(s);window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config',id);})();
+(()=>{const s=document.createElement('script');s.src='consent.js?v=20260903-1';document.head.appendChild(s)})();
 (()=>{const l=document.createElement('link');l.rel='stylesheet';l.href='theme-v2.css?v=20260902-nav3';document.head.appendChild(l)})();
 const $=(s,r=document)=>r.querySelector(s);const $$=(s,r=document)=>[...r.querySelectorAll(s)];const root=document.documentElement;
 
