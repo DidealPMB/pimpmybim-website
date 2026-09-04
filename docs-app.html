@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Documentation technique de l'application IFC Pimp My BIM : viewer, projets, profils de règles, analyses et issues.">
+<title>Documentation Application IFC — Pimp My BIM</title>
+<link rel="canonical" href="https://pimpmybim.fr/docs-app.html">
+<link rel="stylesheet" href="style.css?v=20260902">
+<link rel="stylesheet" href="theme-v2.css?v=20260904">
+<link rel="stylesheet" href="pro-pages.css?v=20260904-doc8">
+<style>
+.docSwitch{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}.docSwitch a{display:inline-flex;align-items:center;gap:8px;padding:11px 15px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:13px;font-weight:850}.docSwitch a.active{border-color:color-mix(in srgb,var(--lime) 50%,var(--line));background:color-mix(in srgb,var(--lime) 10%,var(--surface));color:var(--text)}.docLayout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:56px;padding-bottom:110px}.docNav{position:sticky;top:105px;align-self:start;border:1px solid var(--line);background:var(--surface);border-radius:22px;padding:22px;max-height:calc(100vh - 130px);overflow:auto}.docNav strong{display:block;font-size:11px;letter-spacing:.11em;color:var(--lime-deep);margin:4px 0 9px}.docNav a{display:block;padding:6px 0;color:var(--muted);font-size:13px}.docArticle{max-width:1080px}.docArticle section{scroll-margin-top:105px;padding:0 0 68px}.docArticle h2{font-size:42px;letter-spacing:-.045em;margin:0 0 14px}.docArticle h3{font-size:21px;margin:25px 0 9px}.docArticle p,.docArticle li{color:var(--muted);line-height:1.72}.docIntro{font-size:18px!important;max-width:840px}.moduleCard{border:1px solid var(--line);background:var(--surface);border-radius:22px;padding:28px;margin:18px 0;box-shadow:var(--shadow)}.workflow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}.workflow div{border:1px solid var(--line);background:var(--surface2);border-radius:14px;padding:15px;font-size:13px}.workflow b{display:block;color:var(--lime-deep);font-size:11px;margin-bottom:6px}.ruleGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:20px 0}.ruleGrid div{padding:18px;border:1px solid var(--line);border-radius:15px;background:var(--surface2)}.ruleGrid strong{display:block;margin-bottom:5px}.severity{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.severity span{padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface2);font-size:12px;font-weight:850}@media(max-width:900px){.docLayout{grid-template-columns:1fr}.docNav{position:relative;top:0;max-height:none}.workflow,.ruleGrid{grid-template-columns:1fr}.docArticle{max-width:none}}@media(max-width:620px){.docArticle h2{font-size:34px}}
+</style>
+</head>
+<body>
+<header></header>
+<main>
+<section class="resourceHero"><div class="wrap"><div class="kicker">PMB IFC APPLICATION</div><h1>Documentation technique de l’application.</h1><p class="heroCopy">Organisation des projets IFC, viewer, règles de contrôle, analyses et suivi des écarts.</p><div class="docSwitch"><a href="docs.html">← Plugin Revit</a><a class="active" href="docs-app.html">Application IFC</a></div></div></section>
+<div class="wrap docLayout">
+<aside class="docNav"><strong>APPLICATION IFC</strong><a href="#overview">Vue d’ensemble</a><a href="#projects">Projets & fichiers</a><a href="#viewer">Viewer IFC</a><a href="#rules">Profils & règles</a><a href="#analysis">Analyses</a><a href="#issues">Issues & suivi</a></aside>
+<article class="docArticle">
+<section id="overview"><div class="kicker">PMB IFC APPLICATION</div><h2>Vue d’ensemble</h2><p class="docIntro">L’application IFC Pimp My BIM est l’environnement web dédié à l’ouverture, l’exploration et au contrôle qualité des fichiers IFC. Elle est distincte du plugin Revit : le plugin agit dans l’environnement de production, tandis que l’application traite les modèles IFC et leurs résultats de contrôle.</p><div class="workflow"><div><b>01</b>Ajoutez un fichier IFC au projet.</div><div><b>02</b>Explorez le modèle et appliquez un profil de contrôle.</div><div><b>03</b>Analysez les écarts et organisez leur suivi.</div></div></section>
+<section id="projects"><h2>Projets & fichiers IFC</h2><p>L’application organise les modèles par projet afin de regrouper les fichiers IFC, leurs analyses et leur historique dans un même contexte de travail. Cette structure permet de dissocier clairement le fichier source, le profil de contrôle utilisé et les résultats obtenus.</p></section>
+<section id="viewer"><h2>Viewer IFC</h2><p>Le viewer permet de parcourir le modèle 3D et d’inspecter les données IFC associées aux objets. L’utilisateur peut travailler à partir des classes IFC, des attributs, des Property Sets et des propriétés pour comprendre la structure informationnelle du fichier.</p><div class="moduleCard"><h3>Lecture du modèle</h3><p>Le viewer constitue la couche d’exploration. Il permet de visualiser les objets et de relier les résultats d’analyse aux données réellement contenues dans le fichier IFC.</p></div></section>
+<section id="rules"><h2>Profils & moteur de règles</h2><p>Les contrôles sont structurés en profils afin de réutiliser un ensemble cohérent de règles sur plusieurs fichiers ou projets. Une règle peut cibler une classe IFC, un attribut ou une propriété issue d’un Property Set.</p><div class="ruleGrid"><div><strong>Présence de données</strong><span>Contrôle qu’un attribut, un Pset ou une propriété attendue existe et soit renseigné.</span></div><div><strong>Valeurs autorisées / interdites</strong><span>Vérifie une donnée par rapport à un ensemble de valeurs attendu.</span></div><div><strong>Expressions régulières</strong><span>Contrôle la structure d’une valeur textuelle à partir d’un motif.</span></div><div><strong>Doublons</strong><span>Détecte les valeurs qui doivent être uniques dans le périmètre contrôlé.</span></div><div><strong>Seuils numériques</strong><span>Compare une valeur numérique à des limites définies dans la règle.</span></div><div><strong>Classes IFC</strong><span>Contrôle la présence ou la détection des classes attendues dans le modèle.</span></div></div></section>
+<section id="analysis"><h2>Analyses</h2><p>Une analyse applique un profil de règles à un fichier IFC et enregistre les résultats obtenus. Les écarts sont classés par sévérité afin de faciliter la priorisation.</p><div class="severity"><span>Critical</span><span>Warning</span><span>Info</span></div><p>L’historique permet de conserver le contexte des analyses successives et de comparer les résultats au fil des contrôles.</p></section>
+<section id="issues"><h2>Issues & suivi</h2><p>Les écarts identifiés pendant une analyse peuvent alimenter un workflow de suivi. L’objectif est de passer du simple constat technique à une liste de points contrôlables, traçables et exploitables dans le processus de correction.</p></section>
+</article>
+</div>
+</main>
+<footer class="siteFooter"></footer>
+<script src="app.js?v=20260904-doc8"></script>
+</body>
+</html>
