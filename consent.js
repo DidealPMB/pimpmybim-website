@@ -1,3 +1,4 @@
+(()=>{if(!window.__pmbDocsNavigationRequested){window.__pmbDocsNavigationRequested=true;const s=document.createElement('script');s.src='/docs-navigation.js?v=20260904-1';document.head.appendChild(s)}})();
 (()=>{if(!window.__pmbSeoRequested){window.__pmbSeoRequested=true;const s=document.createElement('script');s.src='/seo.js?v=20260903-1';document.head.appendChild(s)}})();
 (()=>{if(!window.__pmbShellRequested){window.__pmbShellRequested=true;const s=document.createElement('script');s.src='/site-shell.js?v=20260903-4';document.head.appendChild(s)}})();
 (()=>{if(!window.__pmbPricingRequested){window.__pmbPricingRequested=true;const s=document.createElement('script');s.src='/pricing-v2.js?v=20260903-1';document.head.appendChild(s)}})();
