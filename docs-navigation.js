@@ -16,37 +16,98 @@
     document.head.appendChild(s);
   }
 
+  function makeMegaItem(href,icon,title,subtitle,extraClass=''){
+    const a=document.createElement('a');
+    a.href=href;
+    a.className=`megaItem ${extraClass}`.trim();
+    a.innerHTML=`<i>${icon}</i><div><strong>${title}</strong><span>${subtitle}</span></div>`;
+    return a;
+  }
+
   function installGlobalResourceLinks(){
     const menu=document.querySelector('.resourceMenu');
     if(menu){
-      const docs=[...menu.querySelectorAll('a')].find(a=>(a.getAttribute('href')||'').replace(/^\.\//,'')==='docs.html');
-      if(docs){
-        const strong=docs.querySelector('strong');
-        const sub=docs.querySelector('span');
-        if(strong)strong.textContent='Documentation produit';
-        if(sub)sub.textContent='Plugin Revit · Application IFC';
+      let revit=[...menu.querySelectorAll('a')].find(a=>(a.getAttribute('href')||'').replace(/^\.\//,'')==='docs.html');
+      if(revit){
+        revit.classList.add('pmbRevitDocsNav');
+        const strong=revit.querySelector('strong');
+        const sub=revit.querySelector('span');
+        if(strong)strong.textContent='Documentation Plugin Revit';
+        if(sub)sub.textContent='Installation · Modules · Exports · Workflows';
+
+        let ifc=menu.querySelector('.pmbIfcDocsNav');
+        if(!ifc){
+          ifc=makeMegaItem('docs-app.html','IFC','Documentation Application IFC','Viewer · BCF · Contrôles · Reporting','pmbIfcDocsNav');
+          revit.insertAdjacentElement('afterend',ifc);
+        }
+
         if(!menu.querySelector('.pmbEnterpriseNav')){
-          const a=document.createElement('a');
-          a.href='architecture.html';
-          a.className='megaItem pmbEnterpriseNav';
-          a.innerHTML='<i>IT</i><div><strong>Architecture & DSI</strong><span>Architecture · Sécurité · Déploiement</span></div>';
-          docs.insertAdjacentElement('afterend',a);
+          const it=makeMegaItem('architecture.html','IT','Architecture & DSI','Architecture · Sécurité · Déploiement','pmbEnterpriseNav');
+          ifc.insertAdjacentElement('afterend',it);
         }
       }
     }
 
     const footer=document.querySelector('.siteFooter');
     if(footer){
-      const docs=[...footer.querySelectorAll('a')].find(a=>(a.getAttribute('href')||'').replace(/^\.\//,'')==='docs.html');
-      if(docs){
-        docs.textContent='Documentation produit';
-        const col=docs.closest('.footerCol');
+      let revit=[...footer.querySelectorAll('a')].find(a=>(a.getAttribute('href')||'').replace(/^\.\//,'')==='docs.html');
+      if(revit){
+        revit.classList.add('pmbRevitDocsFooter');
+        revit.textContent='Documentation Plugin Revit';
+        const col=revit.closest('.footerCol');
+        if(col&&!col.querySelector('.pmbIfcDocsFooter')){
+          const ifc=document.createElement('a');
+          ifc.href='docs-app.html';
+          ifc.className='pmbIfcDocsFooter';
+          ifc.textContent='Documentation Application IFC';
+          revit.insertAdjacentElement('afterend',ifc);
+        }
         if(col&&!col.querySelector('.pmbEnterpriseFooter')){
-          const a=document.createElement('a');
-          a.href='architecture.html';
-          a.className='pmbEnterpriseFooter';
-          a.textContent='Architecture & DSI';
-          docs.insertAdjacentElement('afterend',a);
+          const anchor=col.querySelector('.pmbIfcDocsFooter')||revit;
+          const it=document.createElement('a');
+          it.href='architecture.html';
+          it.className='pmbEnterpriseFooter';
+          it.textContent='Architecture & DSI';
+          anchor.insertAdjacentElement('afterend',it);
+        }
+      }
+    }
+  }
+
+  function fixProductDocumentationLinks(){
+    const revitDoc=document.querySelector('#revit .actions a[href*="docs"]');
+    if(revitDoc)revitDoc.href='docs.html';
+    const ifcDoc=document.querySelector('#ifc .actions a[href*="docs"]');
+    if(ifcDoc)ifcDoc.href='docs-app.html';
+
+    if(path==='downloads.html'){
+      const revitCard=document.querySelector('#revit');
+      const ifcCard=document.querySelector('#ifc');
+      const revitLink=revitCard&&[...revitCard.querySelectorAll('a')].find(a=>/guide|documentation/i.test(a.textContent));
+      const ifcLink=ifcCard&&[...ifcCard.querySelectorAll('a')].find(a=>/documentation/i.test(a.textContent));
+      if(revitLink){revitLink.href='docs.html#installation';revitLink.textContent="Guide d'installation";}
+      if(ifcLink){ifcLink.href='docs-app.html';ifcLink.textContent='Documentation IFC';}
+    }
+
+    const ops=document.querySelector('.productOps .opsGrid');
+    if(ops){
+      const generic=[...ops.querySelectorAll('.opsCard')].find(a=>(a.getAttribute('href')||'').replace(/^\.\//,'')==='docs.html');
+      if(generic){
+        generic.classList.add('pmbOpsRevitDocs');
+        const h=generic.querySelector('h3'),p=generic.querySelector('p'),b=generic.querySelector('b');
+        if(h)h.textContent='Documentation Plugin Revit';
+        if(p)p.textContent='Installation, modules Revit, workflows, exports et reporting.';
+        if(b)b.textContent='Ouvrir la doc Revit →';
+        if(!ops.querySelector('.pmbOpsIfcDocs')){
+          const ifc=generic.cloneNode(true);
+          ifc.href='docs-app.html';
+          ifc.classList.remove('pmbOpsRevitDocs');
+          ifc.classList.add('pmbOpsIfcDocs');
+          const ih=ifc.querySelector('h3'),ip=ifc.querySelector('p'),ib=ifc.querySelector('b');
+          if(ih)ih.textContent='Documentation Application IFC';
+          if(ip)ip.textContent='Viewer, BCF, contrôles qualité, données, historique et reporting.';
+          if(ib)ib.textContent='Ouvrir la doc IFC →';
+          generic.insertAdjacentElement('afterend',ifc);
         }
       }
     }
@@ -88,9 +149,10 @@
     addSwitchToTechnicalPages();
     installDocSwitch();
     installGlobalResourceLinks();
+    fixProductDocumentationLinks();
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run);else run();
   let tries=0;
-  const timer=setInterval(()=>{run();if(++tries>20)clearInterval(timer)},250);
+  const timer=setInterval(()=>{run();if(++tries>24)clearInterval(timer)},250);
 })();
