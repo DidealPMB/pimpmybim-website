@@ -6,7 +6,7 @@
 (()=>{if(!window.__pmbIfcLayoutRequested){window.__pmbIfcLayoutRequested=true;const s=document.createElement('script');s.src='/ifc-layout-fix.js?v=20260903-1';document.head.appendChild(s)}})();
 
 (()=>{
-  const ID='G-KD5YH9Q4V8';
+  const ID='G-KD5YMHQ4V8';
   const KEY='pmb-analytics-consent-v2';
   const MAX=180*24*60*60*1000;
 
