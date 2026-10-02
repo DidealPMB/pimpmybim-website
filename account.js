@@ -35,7 +35,7 @@ async function authorized(path,options={}){
   }
 }
 function formatDate(value){if(!value)return"—";const d=new Date(value);return Number.isNaN(d.getTime())?"—":new Intl.DateTimeFormat("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"}).format(d)}
-function planLabel(code,name){if(name)return name;const c=String(code||"FREE").toUpperCase();return c==="PREMIUM"?"PMB Premium":c==="PRO"?"PMB Pro":c==="TRIAL"?"PMB Trial":c==="OWNER"||c==="PROMAX"?"PMB Owner":"PMB Free"}
+function planLabel(code,name){const c=String(code||"FREE").toUpperCase();if(c==="PREMIUM")return"IFC Pro";if(c==="PRO")return"IFC Control";if(c==="FREE")return"IFC Viewer";if(c==="TRIAL")return"IFC Trial";if(c==="OWNER"||c==="PROMAX")return"PMB Owner";return name||("PMB "+c)}
 function projectLimitText(value){return value===null||value===undefined?"Illimité":String(value)}
 function initials(name){const parts=String(name||"P").trim().split(/\s+/).filter(Boolean);return (parts[0]?.[0]||"P")+(parts.length>1?(parts.at(-1)?.[0]||""):"")}
 function renderFeatures(features){
@@ -137,7 +137,7 @@ function renderPlanState(){
     card.classList.toggle("current",current);
     const badge=card.querySelector(".accountPlanCurrent");if(badge)badge.hidden=!current;
     const button=card.querySelector(".choosePlanButton");
-    if(button){button.disabled=current;button.textContent=current?"Plan actuel":code==="FREE"?"Passer en Free":code==="PRO"?"Choisir Pro":"Choisir Premium"}
+    if(button){button.disabled=current;button.textContent=current?"Plan actuel":code==="FREE"?"Passer à IFC Viewer":code==="PRO"?"Choisir IFC Control":"Choisir IFC Pro"}
   })
 }
 function renderBillingCycle(){
@@ -146,7 +146,7 @@ function renderBillingCycle(){
   document.querySelectorAll(".accountPlanPrice [data-monthly][data-yearly]").forEach(el=>{el.textContent=el.dataset[billingCycle]||el.textContent})
 }
 function choosePlan(plan){
-  const status=$("planChoiceStatus"),label=plan==="PRO"?"PMB Pro":plan==="PREMIUM"?"PMB Premium":"PMB Free",cycle=billingCycle==="yearly"?"annuel":"mensuel";
+  const status=$("planChoiceStatus"),label=plan==="PRO"?"IFC Control":plan==="PREMIUM"?"IFC Pro":"IFC Viewer",cycle=billingCycle==="yearly"?"annuel":"mensuel";
   localStorage.setItem("pmb-account-plan-intent-v1",JSON.stringify({plan,billingCycle,selectedAt:new Date().toISOString()}));
   status.hidden=false;status.className="planChoiceStatus success";
   status.textContent=plan==="FREE"
