@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="style.css?v=20261002-account1">
   <link rel="stylesheet" href="theme-v2.css?v=20261002-account1">
   <link rel="stylesheet" href="pro-pages.css?v=20261002-account1">
-  <link rel="stylesheet" href="account.css?v=20261002-account1">
+  <link rel="stylesheet" href="account.css?v=20261002-account2">
 </head>
 <body>
   <div class="noise"></div>
@@ -137,6 +137,47 @@
             <div id="featureList" class="accountFeatureList"></div>
           </article>
 
+          <article id="subscriptionPlans" class="accountCard accountCardWide">
+            <div class="accountCardHead accountPlansHead">
+              <div>
+                <div class="accountKicker">ABONNEMENT</div>
+                <h3>Choisir mon offre PMB Platform</h3>
+                <p class="accountMuted">Votre compte reste le même. Le paiement sera branché ensuite : pour l'instant, choisir une offre ne modifie pas votre licence.</p>
+              </div>
+              <div class="billingToggle" role="group" aria-label="Période de facturation">
+                <button id="billingMonthly" class="billingToggleBtn active" type="button" data-cycle="monthly">Mensuel</button>
+                <button id="billingYearly" class="billingToggleBtn" type="button" data-cycle="yearly">Annuel</button>
+              </div>
+            </div>
+
+            <div class="accountPlanGrid">
+              <article class="accountPlan" data-plan="FREE">
+                <div class="accountPlanTop"><span class="accountPlanCode">FREE</span><span class="accountPlanCurrent" hidden>Plan actuel</span></div>
+                <h4>PMB Free</h4>
+                <div class="accountPlanPrice"><strong>0 €</strong><span>pour toujours</span></div>
+                <ul><li>1 projet</li><li>Viewer IFC</li><li>Gestion des modèles</li><li>BCF Manager</li></ul>
+                <button class="accountButton ghost choosePlanButton" type="button" data-plan="FREE">Rester en Free</button>
+              </article>
+
+              <article class="accountPlan featured" data-plan="PRO">
+                <div class="accountPlanTop"><span class="accountPlanCode">PRO</span><span class="accountPlanCurrent" hidden>Plan actuel</span></div>
+                <h4>PMB Pro</h4>
+                <div class="accountPlanPrice"><strong data-monthly="10 €" data-yearly="100 €">10 €</strong><span data-monthly="/ mois" data-yearly="/ an">/ mois</span></div>
+                <ul><li>5 projets</li><li>Tout Free</li><li>BIM Audit</li><li>2 activations</li></ul>
+                <button class="accountButton primary choosePlanButton" type="button" data-plan="PRO">Choisir Pro</button>
+              </article>
+
+              <article class="accountPlan" data-plan="PREMIUM">
+                <div class="accountPlanTop"><span class="accountPlanCode">PREMIUM</span><span class="accountPlanCurrent" hidden>Plan actuel</span></div>
+                <h4>PMB Premium</h4>
+                <div class="accountPlanPrice"><strong data-monthly="15 €" data-yearly="150 €">15 €</strong><span data-monthly="/ mois" data-yearly="/ an">/ mois</span></div>
+                <ul><li>Projets illimités</li><li>Tout Pro</li><li>Outils avancés IFC</li><li>3 activations</li></ul>
+                <button class="accountButton choosePlanButton" type="button" data-plan="PREMIUM">Choisir Premium</button>
+              </article>
+            </div>
+            <div id="planChoiceStatus" class="planChoiceStatus" hidden></div>
+          </article>
+
           <article class="accountCard accountCardWide">
             <div class="accountCardHead">
               <div>
@@ -157,7 +198,7 @@
             </div>
             <div class="accountActionRows">
               <div><div><strong>Mot de passe</strong><span>Modification et récupération sécurisée.</span></div><button class="accountButton ghost" type="button" disabled>Bientôt</button></div>
-              <div><div><strong>Abonnement</strong><span>Changer de plan, renouvellement et factures.</span></div><button class="accountButton ghost" type="button" disabled>Bientôt</button></div>
+              <div><div><strong>Abonnement</strong><span>Consulter les offres et préparer votre changement de plan.</span></div><button id="manageSubscriptionButton" class="accountButton ghost" type="button">Voir les offres</button></div>
               <div><div><strong>Vérification email</strong><span>Validation de l'adresse email du compte.</span></div><button class="accountButton ghost" type="button" disabled>Bientôt</button></div>
             </div>
           </article>
@@ -168,6 +209,6 @@
 
   <footer class="siteFooter"></footer>
   <script src="site-shell.js?v=20261002-account1"></script>
-  <script src="account.js?v=20261002-account1"></script>
+  <script src="account.js?v=20261002-account2"></script>
 </body>
 </html>
