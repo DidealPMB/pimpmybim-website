@@ -7,17 +7,17 @@
   <meta name="theme-color" content="#0b0e0a">
   <meta name="robots" content="noindex,nofollow">
   <title>Mon compte — Pimp My BIM</title>
-  <link rel="stylesheet" href="style.css?v=20261002-account1">
-  <link rel="stylesheet" href="theme-v2.css?v=20261002-account1">
-  <link rel="stylesheet" href="pro-pages.css?v=20261002-account1">
-  <link rel="stylesheet" href="account.css?v=20261002-account3">
+  <link rel="stylesheet" href="style.css?v=20261002-account4">
+  <link rel="stylesheet" href="theme-v2.css?v=20261002-account4">
+  <link rel="stylesheet" href="pro-pages.css?v=20261002-account4">
+  <link rel="stylesheet" href="account.css?v=20261002-account4">
 </head>
 <body>
   <div class="noise"></div>
   <header></header>
 
   <main class="accountMain">
-    <section class="accountHero">
+    <section id="guestHero" class="accountHero">
       <div class="wrap">
         <div class="accountEyebrow">ESPACE CLIENT PMB</div>
         <h1>Votre compte.<br><span>Vos accès.</span></h1>
@@ -28,14 +28,18 @@
     <section class="wrap accountWorkspace">
       <div id="accountNotice" class="accountNotice" hidden></div>
 
-      <section id="authView" class="accountAuthGrid">
-        <article class="accountCard accountCardPrimary">
-          <div class="accountCardHead">
-            <div>
-              <div class="accountKicker">CONNEXION</div>
-              <h2>Accéder à mon compte</h2>
-            </div>
-            <span class="statusDot"></span>
+      <section id="authView" class="authShell">
+        <article class="authCard">
+          <div class="authBrandMark" aria-hidden="true">PMB</div>
+          <div class="authIntro">
+            <div class="accountKicker">ESPACE CLIENT</div>
+            <h2 id="authTitle">Connexion</h2>
+            <p id="authSubtitle" class="accountMuted">Retrouvez vos licences, appareils et droits PMB.</p>
+          </div>
+
+          <div class="authTabs" role="tablist" aria-label="Accès au compte">
+            <button id="showLogin" class="authTab active" type="button" role="tab" aria-selected="true">Se connecter</button>
+            <button id="showRegister" class="authTab" type="button" role="tab" aria-selected="false">Créer un compte</button>
           </div>
 
           <form id="loginForm" class="accountForm">
@@ -48,17 +52,10 @@
               <input id="loginPassword" name="password" type="password" autocomplete="current-password" required placeholder="••••••••">
             </label>
             <button class="accountButton primary" type="submit">Se connecter <span>→</span></button>
+            <button id="forgotPasswordButton" class="authTextButton" type="button">Mot de passe oublié ?</button>
           </form>
 
-          <p class="accountSecurityNote">Votre mot de passe n'est jamais stocké sur ce site. L'authentification est assurée par le serveur PMB.</p>
-        </article>
-
-        <article class="accountCard">
-          <div class="accountKicker">NOUVEAU SUR PMB</div>
-          <h2>Créer un compte</h2>
-          <p class="accountMuted">Tout nouveau compte démarre en PMB Free. Vous pourrez ensuite passer en Pro ou Premium avec la même adresse email.</p>
-
-          <form id="registerForm" class="accountForm compact">
+          <form id="registerForm" class="accountForm" hidden>
             <label>
               <span>Nom affiché</span>
               <input id="registerName" name="displayName" type="text" autocomplete="name" required placeholder="Votre nom">
@@ -71,79 +68,84 @@
               <span>Mot de passe</span>
               <input id="registerPassword" name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="8 caractères minimum">
             </label>
-            <button class="accountButton" type="submit">Créer mon compte</button>
+            <button class="accountButton primary" type="submit">Créer mon compte <span>→</span></button>
+            <p class="authHint">Votre compte démarre automatiquement en PMB Free.</p>
           </form>
+
+          <p class="accountSecurityNote">Votre mot de passe n'est jamais stocké sur ce site. L'authentification est assurée par le serveur PMB.</p>
         </article>
       </section>
 
-      <section id="dashboardView" class="accountDashboard" hidden>
-        <div class="accountDashboardTop">
-          <div>
-            <div class="accountKicker">MON COMPTE</div>
-            <h2 id="welcomeTitle">Bonjour</h2>
-            <p id="accountEmail" class="accountMuted"></p>
+      <section id="dashboardView" class="accountApp" hidden>
+        <aside class="accountSidebar">
+          <div class="accountIdentity">
+            <div class="accountAvatar" id="accountAvatar">P</div>
+            <div>
+              <strong id="sidebarName">Utilisateur PMB</strong>
+              <span id="sidebarEmail"></span>
+            </div>
           </div>
-          <div class="accountTopActions">
-            <button id="refreshAccount" class="accountButton ghost" type="button">Actualiser</button>
-            <button id="logoutButton" class="accountButton" type="button">Se déconnecter</button>
+
+          <nav class="accountMenu" aria-label="Sections du compte">
+            <button class="accountMenuItem active" type="button" data-section="overview">
+              <span class="menuIcon">⌂</span><span>Vue d'ensemble</span>
+            </button>
+            <button class="accountMenuItem" type="button" data-section="subscription">
+              <span class="menuIcon">◈</span><span>Abonnement</span>
+            </button>
+            <button class="accountMenuItem" type="button" data-section="devices">
+              <span class="menuIcon">▣</span><span>Mes appareils</span>
+            </button>
+            <button class="accountMenuItem" type="button" data-section="security">
+              <span class="menuIcon">⌁</span><span>Sécurité</span>
+            </button>
+          </nav>
+
+          <div class="accountSidebarBottom">
+            <button id="refreshAccount" class="sidebarAction" type="button">↻ Actualiser</button>
+            <button id="logoutButton" class="sidebarAction danger" type="button">↪ Se déconnecter</button>
           </div>
-        </div>
+        </aside>
 
-        <div class="accountStats">
-          <article class="accountStat">
-            <span>Plan actuel</span>
-            <strong id="planName">—</strong>
-            <small id="licenseStatus">—</small>
-          </article>
-          <article class="accountStat">
-            <span>Projets</span>
-            <strong id="projectLimit">—</strong>
-            <small>limite du plan</small>
-          </article>
-          <article class="accountStat">
-            <span>Activations</span>
-            <strong id="activationCount">—</strong>
-            <small>appareils utilisés</small>
-          </article>
-          <article class="accountStat">
-            <span>Expiration</span>
-            <strong id="expiresAt">—</strong>
-            <small id="expiryCaption">selon votre plan</small>
-          </article>
-        </div>
-
-        <div class="accountDashboardGrid">
-          <article class="accountCard">
-            <div class="accountCardHead">
+        <div class="accountContent">
+          <section class="accountPanel active" data-panel="overview">
+            <div class="panelHeader">
               <div>
+                <div class="accountKicker">MON COMPTE</div>
+                <h2 id="welcomeTitle">Bonjour</h2>
+                <p class="accountMuted">Voici l'état actuel de votre compte Pimp My BIM.</p>
+              </div>
+              <span id="profileStatusBadge" class="accountStatusBadge">Actif</span>
+            </div>
+
+            <div class="accountStats">
+              <article class="accountStat"><span>Plan actuel</span><strong id="planName">—</strong><small id="licenseStatus">—</small></article>
+              <article class="accountStat"><span>Projets</span><strong id="projectLimit">—</strong><small>limite du plan</small></article>
+              <article class="accountStat"><span>Activations</span><strong id="activationCount">—</strong><small>appareils utilisés</small></article>
+              <article class="accountStat"><span>Expiration</span><strong id="expiresAt">—</strong><small id="expiryCaption">selon votre plan</small></article>
+            </div>
+
+            <div class="overviewGrid">
+              <article class="accountCard">
                 <div class="accountKicker">PROFIL</div>
                 <h3>Informations du compte</h3>
-              </div>
-            </div>
-            <dl class="accountDetails">
-              <div><dt>Nom</dt><dd id="profileName">—</dd></div>
-              <div><dt>Email</dt><dd id="profileEmail">—</dd></div>
-              <div><dt>Statut</dt><dd id="profileStatus">Actif</dd></div>
-            </dl>
-          </article>
-
-          <article class="accountCard">
-            <div class="accountCardHead">
-              <div>
+                <dl class="accountDetails">
+                  <div><dt>Nom</dt><dd id="profileName">—</dd></div>
+                  <div><dt>Email</dt><dd id="profileEmail">—</dd></div>
+                  <div><dt>Statut</dt><dd id="profileStatus">Actif</dd></div>
+                </dl>
+              </article>
+              <article class="accountCard">
                 <div class="accountKicker">DROITS</div>
                 <h3>Fonctionnalités actives</h3>
-              </div>
+                <div id="featureList" class="accountFeatureList"></div>
+              </article>
             </div>
-            <div id="featureList" class="accountFeatureList"></div>
-          </article>
+          </section>
 
-          <article id="subscriptionPlans" class="accountCard accountCardWide">
-            <div class="accountCardHead accountPlansHead">
-              <div>
-                <div class="accountKicker">ABONNEMENT</div>
-                <h3>Choisir mon offre PMB Platform</h3>
-                <p class="accountMuted">Votre compte reste le même. Le paiement sera branché ensuite : pour l'instant, choisir une offre ne modifie pas votre licence.</p>
-              </div>
+          <section class="accountPanel" data-panel="subscription">
+            <div class="panelHeader">
+              <div><div class="accountKicker">ABONNEMENT</div><h2>Choisir mon offre</h2><p class="accountMuted">Le paiement sera connecté plus tard. Aucun clic ici ne modifie encore votre licence.</p></div>
               <div class="billingToggle" role="group" aria-label="Période de facturation">
                 <button id="billingMonthly" class="billingToggleBtn active" type="button" data-cycle="monthly">Mensuel</button>
                 <button id="billingYearly" class="billingToggleBtn" type="button" data-cycle="yearly">Annuel</button>
@@ -158,7 +160,6 @@
                 <ul><li>1 projet</li><li>Viewer IFC</li><li>Gestion des modèles</li><li>BCF Manager</li></ul>
                 <button class="accountButton ghost choosePlanButton" type="button" data-plan="FREE">Rester en Free</button>
               </article>
-
               <article class="accountPlan featured" data-plan="PRO">
                 <div class="accountPlanTop"><span class="accountPlanCode">PRO</span><span class="accountPlanCurrent" hidden>Plan actuel</span></div>
                 <h4>PMB Pro</h4>
@@ -166,7 +167,6 @@
                 <ul><li>5 projets</li><li>Tout Free</li><li>BIM Audit</li><li>2 activations</li></ul>
                 <button class="accountButton primary choosePlanButton" type="button" data-plan="PRO">Choisir Pro</button>
               </article>
-
               <article class="accountPlan" data-plan="PREMIUM">
                 <div class="accountPlanTop"><span class="accountPlanCode">PREMIUM</span><span class="accountPlanCurrent" hidden>Plan actuel</span></div>
                 <h4>PMB Premium</h4>
@@ -176,42 +176,31 @@
               </article>
             </div>
             <div id="planChoiceStatus" class="planChoiceStatus" hidden></div>
-          </article>
+          </section>
 
-          <article class="accountCard accountCardWide">
-            <div class="accountCardHead">
-              <div>
-                <div class="accountKicker">APPAREILS</div>
-                <h3>Activations de licence</h3>
-              </div>
+          <section class="accountPanel" data-panel="devices">
+            <div class="panelHeader">
+              <div><div class="accountKicker">APPAREILS</div><h2>Mes activations</h2><p class="accountMuted">Les appareils apparaissent après activation depuis PMB Platform.</p></div>
               <span id="activationBadge" class="accountBadge">—</span>
             </div>
-            <p class="accountMuted">Les appareils apparaissent ici dès qu'une licence PMB payante a été activée depuis PMB Platform.</p>
-            <div id="deviceList" class="accountDeviceList">
-              <div class="accountDeviceEmpty">Aucun appareil à afficher.</div>
-            </div>
-          </article>
+            <div id="deviceList" class="accountDeviceList"><div class="accountDeviceEmpty">Aucun appareil à afficher.</div></div>
+          </section>
 
-          <article class="accountCard accountCardWide">
-            <div class="accountCardHead">
-              <div>
-                <div class="accountKicker">SÉCURITÉ & ABONNEMENT</div>
-                <h3>Gestion du compte</h3>
-              </div>
+          <section class="accountPanel" data-panel="security">
+            <div class="panelHeader"><div><div class="accountKicker">SÉCURITÉ</div><h2>Gestion du compte</h2><p class="accountMuted">Les fonctions liées aux emails seront activées avec le service d'envoi automatique.</p></div></div>
+            <div class="securityGrid">
+              <article class="securityCard"><div><strong>Mot de passe</strong><span>Modifier ou récupérer votre mot de passe.</span></div><button class="accountButton ghost" type="button" disabled>Bientôt</button></article>
+              <article class="securityCard"><div><strong>Vérification email</strong><span>Valider l'adresse email liée à votre compte.</span></div><button class="accountButton ghost" type="button" disabled>Bientôt</button></article>
+              <article class="securityCard"><div><strong>Sessions</strong><span>Déconnecter vos sessions actives sur les autres appareils.</span></div><button class="accountButton ghost" type="button" disabled>Bientôt</button></article>
             </div>
-            <div class="accountActionRows">
-              <div><div><strong>Mot de passe</strong><span>Modification et récupération sécurisée.</span></div><button class="accountButton ghost" type="button" disabled>Bientôt</button></div>
-              <div><div><strong>Abonnement</strong><span>Consulter les offres et préparer votre changement de plan.</span></div><button id="manageSubscriptionButton" class="accountButton ghost" type="button">Voir les offres</button></div>
-              <div><div><strong>Vérification email</strong><span>Validation de l'adresse email du compte.</span></div><button class="accountButton ghost" type="button" disabled>Bientôt</button></div>
-            </div>
-          </article>
+          </section>
         </div>
       </section>
     </section>
   </main>
 
   <footer class="siteFooter"></footer>
-  <script src="site-shell.js?v=20261002-account1"></script>
-  <script src="account.js?v=20261002-account3"></script>
+  <script src="site-shell.js?v=20261002-account4"></script>
+  <script src="account.js?v=20261002-account4"></script>
 </body>
 </html>
