@@ -41,6 +41,31 @@ function renderFeatures(features){
   if(!list.length){root.innerHTML='<span class="accountMuted">Aucun droit spécifique retourné.</span>';return}
   list.forEach(feature=>{const el=document.createElement("span");el.className="accountFeature";el.textContent=feature;root.appendChild(el)})
 }
+function renderDevices(devices){
+  const root=$("deviceList");root.innerHTML="";
+  const list=Array.isArray(devices)?devices:[];
+  if(!list.length){
+    root.innerHTML='<div class="accountDeviceEmpty">Aucun appareil activé pour le moment.</div>';
+    return;
+  }
+  list.forEach(device=>{
+    const active=Boolean(get(device,"isActive","IsActive"));
+    const name=get(device,"machineName","MachineName")||"Appareil sans nom";
+    const plan=get(device,"planCode","PlanCode")||"—";
+    const activated=get(device,"activatedAtUtc","ActivatedAtUtc");
+    const deactivated=get(device,"deactivatedAtUtc","DeactivatedAtUtc");
+    const row=document.createElement("div");
+    row.className="accountDevice";
+    const info=document.createElement("div");
+    const title=document.createElement("strong");title.textContent=name;
+    const meta=document.createElement("div");meta.className="accountDeviceMeta";
+    const planMeta=document.createElement("span");planMeta.textContent="Plan "+plan;
+    const dateMeta=document.createElement("span");dateMeta.textContent=active?"Activé le "+formatDate(activated):"Désactivé le "+formatDate(deactivated);
+    meta.append(planMeta,dateMeta);info.append(title,meta);
+    const status=document.createElement("span");status.className="accountDeviceStatus "+(active?"active":"inactive");status.textContent=active?"Actif":"Inactif";
+    row.append(info,status);root.appendChild(row);
+  })
+}
 function profileName(profile){return get(profile,"displayName","DisplayName","name","Name")||"Utilisateur PMB"}
 function profileEmail(profile){return get(profile,"email","Email")||""}
 function renderDashboard(profile,ent){
@@ -73,8 +98,13 @@ function renderDashboard(profile,ent){
 }
 async function loadDashboard(){
   clearNotice();
-  const [profile,ent]=await Promise.all([authorized("/api/account/me"),authorized("/api/account/entitlements")]);
+  const [profile,ent,devices]=await Promise.all([
+    authorized("/api/account/me"),
+    authorized("/api/account/entitlements"),
+    authorized("/api/account/devices")
+  ]);
   renderDashboard(profile,ent);
+  renderDevices(devices);
 }
 async function authenticate(path,payload){
   const data=await request(path,{method:"POST",body:JSON.stringify(payload)});
