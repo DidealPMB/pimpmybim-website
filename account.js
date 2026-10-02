@@ -4,6 +4,8 @@ const SESSION_KEY="pmb-account-web-session-v1";
 const $=id=>document.getElementById(id);
 const authView=$("authView"),dashboardView=$("dashboardView"),notice=$("accountNotice");
 let session=loadSession();
+let currentPlanCode="FREE";
+let billingCycle="monthly";
 
 function loadSession(){try{return JSON.parse(sessionStorage.getItem(SESSION_KEY)||"null")}catch{return null}}
 function saveSession(value){session=value;if(value)sessionStorage.setItem(SESSION_KEY,JSON.stringify(value));else sessionStorage.removeItem(SESSION_KEY)}
@@ -43,6 +45,7 @@ function profileName(profile){return get(profile,"displayName","DisplayName","na
 function profileEmail(profile){return get(profile,"email","Email")||""}
 function renderDashboard(profile,ent){
   const code=get(ent,"planCode","PlanCode")||"FREE";
+  currentPlanCode=String(code).toUpperCase();
   const name=get(ent,"planName","PlanName");
   const limits=get(ent,"limits","Limits")||{};
   const acts=get(ent,"activations","Activations")||{};
@@ -65,6 +68,7 @@ function renderDashboard(profile,ent){
   $("expiresAt").textContent=expires?formatDate(expires):"—";
   $("expiryCaption").textContent=expires?"date d'expiration":"aucune expiration";
   renderFeatures(get(ent,"features","Features")||[]);
+  renderPlanState();
   authView.hidden=true;dashboardView.hidden=false
 }
 async function loadDashboard(){
@@ -77,6 +81,49 @@ async function authenticate(path,payload){
   saveSession(data);
   await loadDashboard()
 }
+function renderPlanState(){
+  document.querySelectorAll(".accountPlan").forEach(card=>{
+    const code=card.dataset.plan;
+    const current=code===currentPlanCode;
+    card.classList.toggle("current",current);
+    const badge=card.querySelector(".accountPlanCurrent");
+    if(badge)badge.hidden=!current;
+    const button=card.querySelector(".choosePlanButton");
+    if(button){
+      button.disabled=current;
+      if(current)button.textContent="Plan actuel";
+      else if(code==="FREE")button.textContent="Passer en Free";
+      else if(code==="PRO")button.textContent="Choisir Pro";
+      else if(code==="PREMIUM")button.textContent="Choisir Premium";
+    }
+  })
+}
+function renderBillingCycle(){
+  $("billingMonthly")?.classList.toggle("active",billingCycle==="monthly");
+  $("billingYearly")?.classList.toggle("active",billingCycle==="yearly");
+  document.querySelectorAll(".accountPlanPrice [data-monthly][data-yearly]").forEach(el=>{
+    el.textContent=el.dataset[billingCycle]||el.textContent
+  })
+}
+function choosePlan(plan){
+  const status=$("planChoiceStatus");
+  const label=plan==="PRO"?"PMB Pro":plan==="PREMIUM"?"PMB Premium":"PMB Free";
+  const cycle=billingCycle==="yearly"?"annuel":"mensuel";
+  localStorage.setItem("pmb-account-plan-intent-v1",JSON.stringify({plan,billingCycle,selectedAt:new Date().toISOString()}));
+  status.hidden=false;
+  status.className="planChoiceStatus success";
+  if(plan==="FREE"){
+    status.textContent="Choix enregistré : "+label+". Le changement réel de plan sera relié au backend lors de l'intégration du paiement."
+  }else{
+    status.textContent="Choix enregistré : "+label+" ("+cycle+"). Le paiement n'est pas encore branché : aucun droit payant n'a été activé et votre plan actuel reste inchangé."
+  }
+}
+$("billingMonthly")?.addEventListener("click",()=>{billingCycle="monthly";renderBillingCycle()});
+$("billingYearly")?.addEventListener("click",()=>{billingCycle="yearly";renderBillingCycle()});
+document.querySelectorAll(".choosePlanButton").forEach(button=>button.addEventListener("click",()=>choosePlan(button.dataset.plan)));
+$("manageSubscriptionButton")?.addEventListener("click",()=>$("subscriptionPlans")?.scrollIntoView({behavior:"smooth",block:"start"}));
+renderBillingCycle();
+
 $("loginForm")?.addEventListener("submit",async e=>{
   e.preventDefault();clearNotice();setBusy(authView,true);
   try{await authenticate("/api/account/login",{email:$("loginEmail").value.trim(),password:$("loginPassword").value})}
