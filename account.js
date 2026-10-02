@@ -2,7 +2,7 @@
 const API="https://license.pimpmybim.fr";
 const SESSION_KEY="pmb-account-web-session-v1";
 const $=id=>document.getElementById(id);
-const authView=$("authView"),dashboardView=$("dashboardView"),notice=$("accountNotice");
+const authView=$("authView"),dashboardView=$("dashboardView"),guestHero=$("guestHero"),notice=$("accountNotice");
 let session=loadSession();
 let currentPlanCode="FREE";
 let billingCycle="monthly";
@@ -11,10 +11,12 @@ function loadSession(){try{return JSON.parse(sessionStorage.getItem(SESSION_KEY)
 function saveSession(value){session=value;if(value)sessionStorage.setItem(SESSION_KEY,JSON.stringify(value));else sessionStorage.removeItem(SESSION_KEY)}
 function token(){return session?.accessToken||session?.AccessToken||""}
 function refreshToken(){return session?.refreshToken||session?.RefreshToken||""}
-function get(obj,...keys){for(const k of keys){if(obj&&obj[k]!==undefined&&obj[k]!==null)return obj[k]}return null}
+function get(obj,...keys){for(const k of keys){if(obj&&obj[k]!==undefined)return obj[k]}return null}
 function showNotice(message,type=""){notice.textContent=message;notice.className="accountNotice"+(type?" "+type:"");notice.hidden=false}
 function clearNotice(){notice.hidden=true;notice.textContent="";notice.className="accountNotice"}
 function setBusy(el,busy){el?.classList.toggle("accountBusy",busy)}
+function showGuest(){guestHero.hidden=false;authView.hidden=false;dashboardView.hidden=true}
+function showAccount(){guestHero.hidden=true;authView.hidden=true;dashboardView.hidden=false}
 async function parseResponse(res){const text=await res.text();if(!text)return null;try{return JSON.parse(text)}catch{return {message:text}}}
 async function request(path,options={}){
   const headers={"Accept":"application/json",...(options.body?{"Content-Type":"application/json"}:{}),...(options.headers||{})};
@@ -35,6 +37,7 @@ async function authorized(path,options={}){
 function formatDate(value){if(!value)return"—";const d=new Date(value);return Number.isNaN(d.getTime())?"—":new Intl.DateTimeFormat("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric"}).format(d)}
 function planLabel(code,name){if(name)return name;const c=String(code||"FREE").toUpperCase();return c==="PREMIUM"?"PMB Premium":c==="PRO"?"PMB Pro":c==="TRIAL"?"PMB Trial":c==="OWNER"||c==="PROMAX"?"PMB Owner":"PMB Free"}
 function projectLimitText(value){return value===null||value===undefined?"Illimité":String(value)}
+function initials(name){const parts=String(name||"P").trim().split(/\s+/).filter(Boolean);return (parts[0]?.[0]||"P")+(parts.length>1?(parts.at(-1)?.[0]||""):"")}
 function renderFeatures(features){
   const root=$("featureList");root.innerHTML="";
   const list=Array.isArray(features)?features:[];
@@ -44,18 +47,14 @@ function renderFeatures(features){
 function renderDevices(devices){
   const root=$("deviceList");root.innerHTML="";
   const list=Array.isArray(devices)?devices:[];
-  if(!list.length){
-    root.innerHTML='<div class="accountDeviceEmpty">Aucun appareil activé pour le moment.</div>';
-    return;
-  }
+  if(!list.length){root.innerHTML='<div class="accountDeviceEmpty">Aucun appareil activé pour le moment.</div>';return}
   list.forEach(device=>{
     const active=Boolean(get(device,"isActive","IsActive"));
     const name=get(device,"machineName","MachineName")||"Appareil sans nom";
     const plan=get(device,"planCode","PlanCode")||"—";
     const activated=get(device,"activatedAtUtc","ActivatedAtUtc");
     const deactivated=get(device,"deactivatedAtUtc","DeactivatedAtUtc");
-    const row=document.createElement("div");
-    row.className="accountDevice";
+    const row=document.createElement("div");row.className="accountDevice";
     const info=document.createElement("div");
     const title=document.createElement("strong");title.textContent=name;
     const meta=document.createElement("div");meta.className="accountDeviceMeta";
@@ -63,12 +62,12 @@ function renderDevices(devices){
     const dateMeta=document.createElement("span");dateMeta.textContent=active?"Activé le "+formatDate(activated):"Désactivé le "+formatDate(deactivated);
     meta.append(planMeta,dateMeta);info.append(title,meta);
     const status=document.createElement("span");status.className="accountDeviceStatus "+(active?"active":"inactive");status.textContent=active?"Actif":"Inactif";
-    row.append(info,status);root.appendChild(row);
+    row.append(info,status);root.appendChild(row)
   })
 }
 function profileName(profile){return get(profile,"displayName","DisplayName","name","Name")||"Utilisateur PMB"}
 function profileEmail(profile){return get(profile,"email","Email")||""}
-function renderDashboard(profile,ent){
+function renderDashboard(profile,ent,devices){
   const code=get(ent,"planCode","PlanCode")||"FREE";
   currentPlanCode=String(code).toUpperCase();
   const name=get(ent,"planName","PlanName");
@@ -78,23 +77,29 @@ function renderDashboard(profile,ent){
   const max=get(acts,"max","Max")??0;
   const expires=get(ent,"expiresAtUtc","ExpiresAtUtc");
   const licenseActive=get(ent,"licenseActive","LicenseActive");
-  const licenseStatus=get(ent,"licenseStatus","LicenseStatus")||((String(code).toUpperCase()==="FREE")?"ACTIVE":"—");
+  const licenseStatus=get(ent,"licenseStatus","LicenseStatus")||"ACTIVE";
   const display=profileName(profile),email=profileEmail(profile);
+  const disabled=Boolean(get(profile,"isDisabled","IsDisabled"));
+
   $("welcomeTitle").textContent="Bonjour "+display;
-  $("accountEmail").textContent=email;
+  $("sidebarName").textContent=display;
+  $("sidebarEmail").textContent=email;
+  $("accountAvatar").textContent=initials(display).toUpperCase();
   $("profileName").textContent=display;
   $("profileEmail").textContent=email||"—";
-  $("profileStatus").textContent=get(profile,"isDisabled","IsDisabled")?"Désactivé":"Actif";
+  $("profileStatus").textContent=disabled?"Désactivé":"Actif";
+  $("profileStatusBadge").textContent=disabled?"Désactivé":"Compte actif";
   $("planName").textContent=planLabel(code,name);
-  $("licenseStatus").textContent=licenseActive===false&&String(code).toUpperCase()!=="FREE"?"Licence inactive":String(licenseStatus);
+  $("licenseStatus").textContent=licenseActive===false&&currentPlanCode!=="FREE"?"Licence inactive":String(licenseStatus);
   $("projectLimit").textContent=projectLimitText(get(limits,"maxProjects","MaxProjects"));
   $("activationCount").textContent=String(active)+" / "+String(max);
   $("activationBadge").textContent=String(active)+" / "+String(max)+" activations";
   $("expiresAt").textContent=expires?formatDate(expires):"—";
   $("expiryCaption").textContent=expires?"date d'expiration":"aucune expiration";
   renderFeatures(get(ent,"features","Features")||[]);
+  renderDevices(devices);
   renderPlanState();
-  authView.hidden=true;dashboardView.hidden=false
+  showAccount()
 }
 async function loadDashboard(){
   clearNotice();
@@ -103,57 +108,54 @@ async function loadDashboard(){
     authorized("/api/account/entitlements"),
     authorized("/api/account/devices")
   ]);
-  renderDashboard(profile,ent);
-  renderDevices(devices);
+  renderDashboard(profile,ent,devices)
 }
 async function authenticate(path,payload){
   const data=await request(path,{method:"POST",body:JSON.stringify(payload)});
   saveSession(data);
   await loadDashboard()
 }
+function switchAuth(mode){
+  const login=mode==="login";
+  $("loginForm").hidden=!login;
+  $("registerForm").hidden=login;
+  $("showLogin").classList.toggle("active",login);
+  $("showRegister").classList.toggle("active",!login);
+  $("showLogin").setAttribute("aria-selected",String(login));
+  $("showRegister").setAttribute("aria-selected",String(!login));
+  $("authTitle").textContent=login?"Connexion":"Créer un compte";
+  $("authSubtitle").textContent=login?"Retrouvez vos licences, appareils et droits PMB.":"Créez votre compte PMB Free en quelques secondes."
+}
+function activatePanel(name){
+  document.querySelectorAll(".accountMenuItem").forEach(btn=>btn.classList.toggle("active",btn.dataset.section===name));
+  document.querySelectorAll(".accountPanel").forEach(panel=>panel.classList.toggle("active",panel.dataset.panel===name));
+  if(innerWidth<1000)document.querySelector(".accountContent")?.scrollIntoView({behavior:"smooth",block:"start"})
+}
 function renderPlanState(){
   document.querySelectorAll(".accountPlan").forEach(card=>{
-    const code=card.dataset.plan;
-    const current=code===currentPlanCode;
+    const code=card.dataset.plan,current=code===currentPlanCode;
     card.classList.toggle("current",current);
-    const badge=card.querySelector(".accountPlanCurrent");
-    if(badge)badge.hidden=!current;
+    const badge=card.querySelector(".accountPlanCurrent");if(badge)badge.hidden=!current;
     const button=card.querySelector(".choosePlanButton");
-    if(button){
-      button.disabled=current;
-      if(current)button.textContent="Plan actuel";
-      else if(code==="FREE")button.textContent="Passer en Free";
-      else if(code==="PRO")button.textContent="Choisir Pro";
-      else if(code==="PREMIUM")button.textContent="Choisir Premium";
-    }
+    if(button){button.disabled=current;button.textContent=current?"Plan actuel":code==="FREE"?"Passer en Free":code==="PRO"?"Choisir Pro":"Choisir Premium"}
   })
 }
 function renderBillingCycle(){
   $("billingMonthly")?.classList.toggle("active",billingCycle==="monthly");
   $("billingYearly")?.classList.toggle("active",billingCycle==="yearly");
-  document.querySelectorAll(".accountPlanPrice [data-monthly][data-yearly]").forEach(el=>{
-    el.textContent=el.dataset[billingCycle]||el.textContent
-  })
+  document.querySelectorAll(".accountPlanPrice [data-monthly][data-yearly]").forEach(el=>{el.textContent=el.dataset[billingCycle]||el.textContent})
 }
 function choosePlan(plan){
-  const status=$("planChoiceStatus");
-  const label=plan==="PRO"?"PMB Pro":plan==="PREMIUM"?"PMB Premium":"PMB Free";
-  const cycle=billingCycle==="yearly"?"annuel":"mensuel";
+  const status=$("planChoiceStatus"),label=plan==="PRO"?"PMB Pro":plan==="PREMIUM"?"PMB Premium":"PMB Free",cycle=billingCycle==="yearly"?"annuel":"mensuel";
   localStorage.setItem("pmb-account-plan-intent-v1",JSON.stringify({plan,billingCycle,selectedAt:new Date().toISOString()}));
-  status.hidden=false;
-  status.className="planChoiceStatus success";
-  if(plan==="FREE"){
-    status.textContent="Choix enregistré : "+label+". Le changement réel de plan sera relié au backend lors de l'intégration du paiement."
-  }else{
-    status.textContent="Choix enregistré : "+label+" ("+cycle+"). Le paiement n'est pas encore branché : aucun droit payant n'a été activé et votre plan actuel reste inchangé."
-  }
+  status.hidden=false;status.className="planChoiceStatus success";
+  status.textContent=plan==="FREE"
+    ?"Choix enregistré : "+label+". Le changement réel sera connecté au système d'abonnement."
+    :"Choix enregistré : "+label+" ("+cycle+"). Le paiement n'est pas encore branché : votre plan actuel reste inchangé."
 }
-$("billingMonthly")?.addEventListener("click",()=>{billingCycle="monthly";renderBillingCycle()});
-$("billingYearly")?.addEventListener("click",()=>{billingCycle="yearly";renderBillingCycle()});
-document.querySelectorAll(".choosePlanButton").forEach(button=>button.addEventListener("click",()=>choosePlan(button.dataset.plan)));
-$("manageSubscriptionButton")?.addEventListener("click",()=>$("subscriptionPlans")?.scrollIntoView({behavior:"smooth",block:"start"}));
-renderBillingCycle();
-
+$("showLogin")?.addEventListener("click",()=>switchAuth("login"));
+$("showRegister")?.addEventListener("click",()=>switchAuth("register"));
+$("forgotPasswordButton")?.addEventListener("click",()=>showNotice("La récupération par email sera activée avec l'envoi automatique des emails PMB.",""));
 $("loginForm")?.addEventListener("submit",async e=>{
   e.preventDefault();clearNotice();setBusy(authView,true);
   try{await authenticate("/api/account/login",{email:$("loginEmail").value.trim(),password:$("loginPassword").value})}
@@ -165,11 +167,10 @@ $("registerForm")?.addEventListener("submit",async e=>{
   try{
     await authenticate("/api/account/register",{displayName:$("registerName").value.trim(),email:$("registerEmail").value.trim(),password:$("registerPassword").value});
     showNotice("Compte créé. Votre accès PMB Free est actif.","success")
-  }catch(err){
-    if(err.status===409)showNotice("Un compte existe déjà avec cette adresse email.","error");
-    else showNotice(err.message,"error")
-  }finally{setBusy(authView,false)}
+  }catch(err){showNotice(err.status===409?"Un compte existe déjà avec cette adresse email.":err.message,"error")}
+  finally{setBusy(authView,false)}
 });
+document.querySelectorAll(".accountMenuItem").forEach(btn=>btn.addEventListener("click",()=>activatePanel(btn.dataset.section)));
 $("refreshAccount")?.addEventListener("click",async()=>{
   setBusy(dashboardView,true);clearNotice();
   try{await loadDashboard();showNotice("Compte et droits actualisés.","success")}
@@ -179,10 +180,16 @@ $("refreshAccount")?.addEventListener("click",async()=>{
 $("logoutButton")?.addEventListener("click",async()=>{
   const rt=refreshToken();
   try{if(token()&&rt)await authorized("/api/account/logout",{method:"POST",body:JSON.stringify({refreshToken:rt})})}catch{}
-  saveSession(null);dashboardView.hidden=true;authView.hidden=false;showNotice("Vous êtes déconnecté.","success")
+  saveSession(null);clearNotice();switchAuth("login");showGuest();showNotice("Vous êtes déconnecté.","success")
 });
+$("billingMonthly")?.addEventListener("click",()=>{billingCycle="monthly";renderBillingCycle()});
+$("billingYearly")?.addEventListener("click",()=>{billingCycle="yearly";renderBillingCycle()});
+document.querySelectorAll(".choosePlanButton").forEach(button=>button.addEventListener("click",()=>choosePlan(button.dataset.plan)));
+renderBillingCycle();switchAuth("login");
+
 (async function boot(){
-  if(!session){authView.hidden=false;dashboardView.hidden=true;return}
-  try{await loadDashboard()}catch{saveSession(null);dashboardView.hidden=true;authView.hidden=false;showNotice("Votre session a expiré. Connectez-vous à nouveau.","error")}
+  if(!session){showGuest();return}
+  try{await loadDashboard()}
+  catch{saveSession(null);showGuest();showNotice("Votre session a expiré. Connectez-vous à nouveau.","error")}
 })();
 })();
