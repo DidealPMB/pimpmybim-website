@@ -18,12 +18,12 @@
   meta('meta[property="og:title"]',{property:'og:title',content:title}).setAttribute('content',title);
   meta('meta[property="og:description"]',{property:'og:description',content:description}).setAttribute('content',description);
   meta('meta[property="og:url"]',{property:'og:url',content:canonical}).setAttribute('content',canonical);
-  meta('meta[property="og:image"]',{property:'og:image',content:ORIGIN+'/assets/Logo_avec%20transparence.png'});
+  meta('meta[property="og:image"]',{property:'og:image',content:ORIGIN+'/assets/logo-pimpmybim.png'});
   meta('meta[property="og:locale"]',{property:'og:locale',content:'fr_FR'});
   meta('meta[name="twitter:card"]',{name:'twitter:card',content:'summary_large_image'});
   meta('meta[name="twitter:title"]',{name:'twitter:title',content:title}).setAttribute('content',title);
   meta('meta[name="twitter:description"]',{name:'twitter:description',content:description}).setAttribute('content',description);
-  meta('meta[name="twitter:image"]',{name:'twitter:image',content:ORIGIN+'/assets/Logo_avec%20transparence.png'});
+  meta('meta[name="twitter:image"]',{name:'twitter:image',content:ORIGIN+'/assets/logo-pimpmybim.png'});
   if(!document.head.querySelector('script[type="application/ld+json"]')){
     const data=isBlogArticle?{
       '@context':'https://schema.org','@type':'Article',headline:(document.querySelector('h1')?.textContent||title).trim(),description,mainEntityOfPage:canonical,
