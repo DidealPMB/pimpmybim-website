@@ -1,5 +1,5 @@
 (()=>{"use strict";
-const API="https://license.pimpmybim.fr";
+const API="";
 const SESSION_KEY="pmb-account-web-session-v1";
 const $=id=>document.getElementById(id);
 const authView=$("authView"),dashboardView=$("dashboardView"),guestHero=$("guestHero"),notice=$("accountNotice");
