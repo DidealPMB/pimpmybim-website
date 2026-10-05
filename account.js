@@ -103,11 +103,17 @@ function renderDashboard(profile,ent,devices){
 }
 async function loadDashboard(){
   clearNotice();
-  const [profile,ent,devices]=await Promise.all([
+  const [profile,ent]=await Promise.all([
     authorized("/api/account/me"),
-    authorized("/api/account/entitlements"),
-    authorized("/api/account/devices")
+    authorized("/api/account/entitlements")
   ]);
+  let devices=[];
+  try{
+    const result=await authorized("/api/account/devices");
+    devices=Array.isArray(result)?result:[]
+  }catch(err){
+    console.warn("PMB account devices unavailable",err)
+  }
   renderDashboard(profile,ent,devices)
 }
 async function authenticate(path,payload){
