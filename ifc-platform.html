@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fr" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="PMB IFC Platform : viewer 3D, Data Manager IFC, édition des Psets, versions de travail, nomenclatures, échange Excel, contrôle qualité, BCF et export IFC.">
+<title>PMB IFC Platform — Viewer, Data Manager & openBIM</title>
+<link rel="canonical" href="https://pimpmybim.fr/ifc-platform.html"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="theme-v2.css"><link rel="stylesheet" href="pro-pages.css">
+<style>
+.pmbIFC{max-width:1140px;margin:auto;padding:145px 20px 95px}.pmbIFC h1{font-size:clamp(45px,7vw,84px);line-height:1.02}.pmbIFC h2{font-size:clamp(27px,4vw,44px);letter-spacing:-.03em;margin:0 0 14px}.pmbIFC p,.pmbIFC li{color:var(--muted);line-height:1.65}.ifcCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:30px 0 70px}.ifcCards article,.ifcSteps li,.ifcNotice{border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:22px}.ifcCards h3{margin:6px 0 12px}.ifcSection{padding:35px 0 55px;border-top:1px solid var(--line)}.ifcSteps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;list-style:none;padding:0;counter-reset:step}.ifcSteps li{counter-increment:step}.ifcSteps li:before{content:counter(step,decimal-leading-zero);display:block;color:var(--lime-deep,#709900);font-weight:900;margin-bottom:10px}.ifcNotice{margin-top:20px}.ifcActions{display:flex;flex-wrap:wrap;gap:12px;margin:25px 0 10px}.ifcEyebrow{font-weight:800;letter-spacing:.1em;font-size:12px;color:var(--lime-deep,#709900)}@media(max-width:800px){.ifcCards,.ifcSteps{grid-template-columns:1fr}.pmbIFC{padding-top:110px}}
+</style></head><body><header></header><main class="pmbIFC">
+<div class="ifcEyebrow">PMB IFC PLATFORM · APPLICATION OPENBIM</div>
+<h1>Contrôlez vos IFC.<br>Modifiez leurs données.</h1>
+<p class="heroCopy">Un environnement de travail pour visualiser, contrôler et exploiter vos maquettes IFC, de la coordination à l'édition des propriétés et aux échanges Excel.</p>
+<div class="ifcActions"><a class="btn primary" href="downloads.html#ifc">Accéder à PMB IFC Platform →</a><a class="btn" href="docs-app.html">Documentation technique</a></div>
+<div class="ifcCards">
+<article><div class="ifcEyebrow">01 · VISUALISATION</div><h3>Viewer IFC 3D</h3><p>Navigation spatiale, sélection d'objets, inspecteur des propriétés, filtres, vues enregistrées, clipping, mesures et panneaux repliables.</p></article>
+<article><div class="ifcEyebrow">02 · DONNÉES</div><h3>Data Manager IFC</h3><p>Versions de travail explicites, édition directe des paramètres et Psets, panier de modifications, prévisualisation et application groupée.</p></article>
+<article><div class="ifcEyebrow">03 · QUALITÉ</div><h3>Contrôles et BCF</h3><p>Profils de règles, analyses, résultats géométriques, suivi d'issues BCF et traçabilité des opérations par projet.</p></article>
+<article><div class="ifcEyebrow">04 · TABLEAUX</div><h3>Nomenclatures</h3><p>Configuration de classes IFC, propriétés, colonnes et filtres pour exploiter et organiser les données des modèles.</p></article>
+<article><div class="ifcEyebrow">05 · ÉCHANGES</div><h3>Import / export Excel</h3><p>Réutilisation du configurateur de nomenclatures, identifiants IFC techniques protégés, prévisualisation et contrôle des imports.</p></article>
+<article><div class="ifcEyebrow">06 · LIVRABLES</div><h3>Export IFC modifié</h3><p>Application des changements à la version de travail, vérification après écriture et export de la révision enregistrée.</p></article>
+</div>
+<section class="ifcSection"><h2>Un workflow d'édition IFC maîtrisé</h2>
+<ol class="ifcSteps">
+<li><strong>Choisir un modèle</strong><p>Consulter l'original en lecture seule ou créer volontairement une copie de travail.</p></li>
+<li><strong>Modifier les paramètres</strong><p>Éditer les valeurs des Psets au fil de la navigation ; les modifications en attente sont signalées visuellement.</p></li>
+<li><strong>Prévisualiser le lot</strong><p>Contrôler les valeurs avant/après et les éventuels conflits avant écriture.</p></li>
+<li><strong>Appliquer les changements</strong><p>Appliquer le lot à la version de travail avec vérification du fichier IFC enregistré.</p></li>
+<li><strong>Échanger avec Excel</strong><p>Préparer les colonnes et filtres avec la même logique que les nomenclatures.</p></li>
+<li><strong>Exporter l'IFC</strong><p>Récupérer la version modifiée effectivement enregistrée, sans toucher à l'original.</p></li>
+</ol>
+</section>
+<section class="ifcSection"><h2>Conçu pour les workflows BIM exigeants</h2><p>La plateforme combine un viewer Three.js/web-ifc et un backend Python/IfcOpenShell. Les données de travail sont séparées de la maquette originale ; les modifications sont validées avant écriture et les versions sont suivies dans l'espace projet.</p><div class="ifcNotice"><strong>Disponibilité</strong><p>Ces fonctions correspondent à l'état du développement PMB IFC Platform d'octobre 2026. Le produit évolue encore : les performances sur IFC de plusieurs Go, les traitements asynchrones et le déploiement commercial nécessitent une qualification supplémentaire. Le profil Internal Dev n'est pas une édition publique.</p></div></section>
+<section class="ifcSection"><h2>Aller plus loin</h2><div class="ifcActions"><a class="btn primary" href="docs-app.html">Consulter la documentation →</a><a class="btn" href="updates.html">Suivre les évolutions</a><a class="btn" href="account.html">Mon compte</a></div></section>
+</main><footer class="siteFooter"></footer><script src="app.js"></script><script src="site-shell.js"></script></body></html>
