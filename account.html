@@ -38,37 +38,37 @@
           </div>
 
           <div class="authTabs" role="tablist" aria-label="Accès au compte">
-            <button id="showLogin" class="authTab active" type="button" role="tab" aria-selected="true">Se connecter</button>
-            <button id="showRegister" class="authTab" type="button" role="tab" aria-selected="false">Créer un compte</button>
+            <button id="showLogin" class="authTab active" type="button" role="tab" aria-selected="true" disabled>Se connecter</button>
+            <button id="showRegister" class="authTab" type="button" role="tab" aria-selected="false" disabled>Créer un compte</button>
           </div>
 
           <form id="loginForm" class="accountForm">
             <label>
               <span>Adresse email</span>
-              <input id="loginEmail" name="email" type="email" autocomplete="email" required placeholder="vous@entreprise.fr">
+              <input id="loginEmail" name="email" type="email" autocomplete="email" required placeholder="vous@entreprise.fr" disabled>
             </label>
             <label>
               <span>Mot de passe</span>
-              <input id="loginPassword" name="password" type="password" autocomplete="current-password" required placeholder="••••••••">
+              <input id="loginPassword" name="password" type="password" autocomplete="current-password" required placeholder="••••••••" disabled>
             </label>
-            <button class="accountButton primary" type="submit">Se connecter <span>→</span></button>
-            <button id="forgotPasswordButton" class="authTextButton" type="button">Mot de passe oublié ?</button>
+            <button class="accountButton primary" type="submit" disabled>Compte bientôt disponible</button>
+            <button id="forgotPasswordButton" class="authTextButton" type="button" disabled>Mot de passe oublié ?</button>
           </form>
 
           <form id="registerForm" class="accountForm" hidden>
             <label>
               <span>Nom affiché</span>
-              <input id="registerName" name="displayName" type="text" autocomplete="name" required placeholder="Votre nom">
+              <input id="registerName" name="displayName" type="text" autocomplete="name" required placeholder="Votre nom" disabled>
             </label>
             <label>
               <span>Adresse email</span>
-              <input id="registerEmail" name="email" type="email" autocomplete="email" required placeholder="vous@entreprise.fr">
+              <input id="registerEmail" name="email" type="email" autocomplete="email" required placeholder="vous@entreprise.fr" disabled>
             </label>
             <label>
               <span>Mot de passe</span>
-              <input id="registerPassword" name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="8 caractères minimum">
+              <input id="registerPassword" name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="8 caractères minimum" disabled>
             </label>
-            <button class="accountButton primary" type="submit">Créer mon compte <span>→</span></button>
+            <button class="accountButton primary" type="submit" disabled>Création de compte bientôt disponible</button>
             <p class="authHint">Votre compte démarre automatiquement en PMB Free.</p>
           </form>
 
