@@ -21,12 +21,12 @@
       <div class="wrap">
         <div class="accountEyebrow">ESPACE CLIENT PMB</div>
         <h1>Votre compte.<br><span>Vos accès.</span></h1>
-        <p>Un seul compte pour PMB Platform, vos licences et vos appareils.</p>
+        <p>Portail de compte et de licences en pré-lancement. La création de compte et l’achat public ne sont pas encore ouverts.</p>
       </div>
     </section>
 
     <section class="wrap accountWorkspace">
-      <div id="accountNotice" class="accountNotice" hidden></div>
+      <div class="accountNotice" role="status">Les fonctions de compte et de licence sont en cours de préparation. Pour demander un accès bêta, écrivez à <a href="mailto:contact@pimpmybim.fr?subject=Demande%20d%E2%80%99acc%C3%A8s%20b%C3%AAta%20PMB">contact@pimpmybim.fr</a>. Les achats en ligne ne sont pas encore disponibles.</div><div id="accountNotice" class="accountNotice" hidden></div>
 
       <section id="authView" class="authShell">
         <article class="authCard">
@@ -38,37 +38,37 @@
           </div>
 
           <div class="authTabs" role="tablist" aria-label="Accès au compte">
-            <button id="showLogin" class="authTab active" type="button" role="tab" aria-selected="true">Se connecter</button>
-            <button id="showRegister" class="authTab" type="button" role="tab" aria-selected="false">Créer un compte</button>
+            <button id="showLogin" class="authTab active" type="button" role="tab" aria-selected="true" disabled>Se connecter</button>
+            <button id="showRegister" class="authTab" type="button" role="tab" aria-selected="false" disabled>Créer un compte</button>
           </div>
 
           <form id="loginForm" class="accountForm">
             <label>
               <span>Adresse email</span>
-              <input id="loginEmail" name="email" type="email" autocomplete="email" required placeholder="vous@entreprise.fr">
+              <input id="loginEmail" name="email" type="email" autocomplete="email" required placeholder="vous@entreprise.fr" disabled>
             </label>
             <label>
               <span>Mot de passe</span>
-              <input id="loginPassword" name="password" type="password" autocomplete="current-password" required placeholder="••••••••">
+              <input id="loginPassword" name="password" type="password" autocomplete="current-password" required placeholder="••••••••" disabled>
             </label>
-            <button class="accountButton primary" type="submit">Se connecter <span>→</span></button>
-            <button id="forgotPasswordButton" class="authTextButton" type="button">Mot de passe oublié ?</button>
+            <button class="accountButton primary" type="submit" disabled>Compte bientôt disponible</button>
+            <button id="forgotPasswordButton" class="authTextButton" type="button" disabled>Mot de passe oublié ?</button>
           </form>
 
           <form id="registerForm" class="accountForm" hidden>
             <label>
               <span>Nom affiché</span>
-              <input id="registerName" name="displayName" type="text" autocomplete="name" required placeholder="Votre nom">
+              <input id="registerName" name="displayName" type="text" autocomplete="name" required placeholder="Votre nom" disabled>
             </label>
             <label>
               <span>Adresse email</span>
-              <input id="registerEmail" name="email" type="email" autocomplete="email" required placeholder="vous@entreprise.fr">
+              <input id="registerEmail" name="email" type="email" autocomplete="email" required placeholder="vous@entreprise.fr" disabled>
             </label>
             <label>
               <span>Mot de passe</span>
-              <input id="registerPassword" name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="8 caractères minimum">
+              <input id="registerPassword" name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="8 caractères minimum" disabled>
             </label>
-            <button class="accountButton primary" type="submit">Créer mon compte <span>→</span></button>
+            <button class="accountButton primary" type="submit" disabled>Création de compte bientôt disponible</button>
             <p class="authHint">Votre compte démarre automatiquement en PMB Free.</p>
           </form>
 
