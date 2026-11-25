@@ -125,12 +125,8 @@ function switchAuth(mode){
   const login=mode==="login";
   $("loginForm").hidden=!login;
   $("registerForm").hidden=login;
-  $("showLogin").classList.toggle("active",login);
-  $("showRegister").classList.toggle("active",!login);
-  $("showLogin").setAttribute("aria-selected",String(login));
-  $("showRegister").setAttribute("aria-selected",String(!login));
   $("authTitle").textContent=login?"Connexion":"Créer un compte";
-  $("authSubtitle").textContent=login?"Retrouvez vos licences, appareils et droits PMB.":"Créez votre compte PMB Free en quelques secondes."
+  $("authSubtitle").textContent=login?"Retrouvez vos licences, appareils et droits PMB.":"Choisissez les identifiants que vous utiliserez dans les logiciels PMB."
 }
 function activatePanel(name){
   document.querySelectorAll(".accountMenuItem").forEach(btn=>btn.classList.toggle("active",btn.dataset.section===name));
@@ -159,8 +155,6 @@ function choosePlan(plan){
     ?"Choix enregistré : "+label+". Le changement réel sera connecté au système d'abonnement."
     :"Choix enregistré : "+label+" ("+cycle+"). Le paiement n'est pas encore branché : votre plan actuel reste inchangé."
 }
-$("showLogin")?.addEventListener("click",()=>switchAuth("login"));
-$("showRegister")?.addEventListener("click",()=>switchAuth("register"));
 $("forgotPasswordButton")?.addEventListener("click",()=>showNotice("La récupération par email sera activée avec l'envoi automatique des emails PMB.",""));
 $("loginForm")?.addEventListener("submit",async e=>{
   e.preventDefault();clearNotice();setBusy(authView,true);
@@ -168,14 +162,61 @@ $("loginForm")?.addEventListener("submit",async e=>{
   catch(err){showNotice(err.status===401?"Email ou mot de passe incorrect.":err.message,"error")}
   finally{setBusy(authView,false)}
 });
-$("registerForm")?.addEventListener("submit",async e=>{
-  e.preventDefault();clearNotice();setBusy(authView,true);
-  try{
-    await authenticate("/api/account/register",{displayName:$("registerName").value.trim(),email:$("registerEmail").value.trim(),password:$("registerPassword").value});
-    showNotice("Compte créé. Votre accès PMB Free est actif.","success")
-  }catch(err){showNotice(err.status===409?"Un compte existe déjà avec cette adresse email.":err.message,"error")}
-  finally{setBusy(authView,false)}
+const registerForm = $("registerForm");
+const registerSubmit = $("registerSubmit");
+
+function registrationError(status) {
+  if (status === 400 || status === 422) return "Vérifiez votre nom, votre adresse email et votre mot de passe (8 caractères minimum).";
+  if (status === 409) return "Un compte existe déjà avec cette adresse email. Utilisez ce compte dans votre logiciel PMB.";
+  if (status === 429) return "Trop de tentatives. Réessayez dans quelques instants.";
+  return "Le service de compte est temporairement indisponible ou n’a pas pu confirmer l’inscription. Réessayez dans quelques instants.";
+}
+
+registerForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  if (registerSubmit.disabled) return;
+
+  const name = $("registerName");
+  const password = $("registerPassword");
+  name.value = name.value.trim();
+  if (!name.reportValidity()) return;
+
+  clearNotice();
+  registerSubmit.disabled = true;
+  registerSubmit.textContent = "Création en cours…";
+  registerForm.setAttribute("aria-busy", "true");
+
+  try {
+    const data = await request("/api/account/register", {
+      method: "POST",
+      cache: "no-store",
+      body: JSON.stringify({
+        displayName: name.value,
+        email: $("registerEmail").value.trim(),
+        password: password.value
+      })
+    });
+
+    // The registration endpoint returns a session. Users sign in from their PMB app.
+    if (!get(data, "accessToken", "AccessToken")) throw new Error("Invalid registration response");
+
+    registerForm.reset();
+    registerForm.hidden = true;
+    $("authTitle").textContent = "Inscription terminée";
+    $("authSubtitle").textContent = "";
+    $("registerConfirmation").hidden = false;
+    $("registerConfirmationTitle").focus();
+  } catch (error) {
+    password.value = "";
+    showNotice(registrationError(error.status), "error");
+    notice.focus();
+  } finally {
+    registerForm.removeAttribute("aria-busy");
+    registerSubmit.disabled = false;
+    registerSubmit.textContent = "Créer mon compte";
+  }
 });
+registerSubmit.disabled = false;
 document.querySelectorAll(".accountMenuItem").forEach(btn=>btn.addEventListener("click",()=>activatePanel(btn.dataset.section)));
 $("refreshAccount")?.addEventListener("click",async()=>{
   setBusy(dashboardView,true);clearNotice();
@@ -186,12 +227,12 @@ $("refreshAccount")?.addEventListener("click",async()=>{
 $("logoutButton")?.addEventListener("click",async()=>{
   const rt=refreshToken();
   try{if(token()&&rt)await authorized("/api/account/logout",{method:"POST",body:JSON.stringify({refreshToken:rt})})}catch{}
-  saveSession(null);clearNotice();switchAuth("login");showGuest();showNotice("Vous êtes déconnecté.","success")
+  saveSession(null);clearNotice();switchAuth("register");showGuest();showNotice("Vous êtes déconnecté.","success")
 });
 $("billingMonthly")?.addEventListener("click",()=>{billingCycle="monthly";renderBillingCycle()});
 $("billingYearly")?.addEventListener("click",()=>{billingCycle="yearly";renderBillingCycle()});
 document.querySelectorAll(".choosePlanButton").forEach(button=>button.addEventListener("click",()=>choosePlan(button.dataset.plan)));
-renderBillingCycle();switchAuth("login");
+renderBillingCycle();switchAuth("register");
 
 (async function boot(){
   if(!session){showGuest();return}
