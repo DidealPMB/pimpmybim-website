@@ -21,28 +21,23 @@
       <div class="wrap">
         <div class="accountEyebrow">ESPACE CLIENT PMB</div>
         <h1>Votre compte.<br><span>Vos accès.</span></h1>
-        <p>Portail de compte et de licences en pré-lancement. La création de compte et l’achat public ne sont pas encore ouverts.</p>
+        <p>Créez votre compte Pimp My BIM pour vous connecter à la plateforme IFC et au plugin Revit.</p>
       </div>
     </section>
 
     <section class="wrap accountWorkspace">
-      <div class="accountNotice" role="status">Les fonctions de compte et de licence sont en cours de préparation. Pour demander un accès bêta, écrivez à <a href="mailto:support@pimpmybim.fr?subject=Demande%20d%E2%80%99acc%C3%A8s%20b%C3%AAta%20PMB">support@pimpmybim.fr</a>. Les achats en ligne ne sont pas encore disponibles.</div><div id="accountNotice" class="accountNotice" hidden></div>
+      <div class="accountNotice" role="status">Pour demander une licence bêta, écrivez à <a href="mailto:support@pimpmybim.fr?subject=Demande%20d%E2%80%99acc%C3%A8s%20b%C3%AAta%20PMB">support@pimpmybim.fr</a>. Les achats en ligne ne sont pas encore disponibles.</div><div id="accountNotice" class="accountNotice" role="status" tabindex="-1" hidden></div>
 
       <section id="authView" class="authShell">
         <article class="authCard">
           <div class="authBrandMark" aria-hidden="true">PMB</div>
           <div class="authIntro">
             <div class="accountKicker">ESPACE CLIENT</div>
-            <h2 id="authTitle">Connexion</h2>
-            <p id="authSubtitle" class="accountMuted">Retrouvez vos licences, appareils et droits PMB.</p>
+            <h2 id="authTitle">Créer un compte</h2>
+            <p id="authSubtitle" class="accountMuted">Choisissez les identifiants que vous utiliserez dans les logiciels PMB.</p>
           </div>
 
-          <div class="authTabs" role="tablist" aria-label="Accès au compte">
-            <button id="showLogin" class="authTab active" type="button" role="tab" aria-selected="true" disabled>Se connecter</button>
-            <button id="showRegister" class="authTab" type="button" role="tab" aria-selected="false" disabled>Créer un compte</button>
-          </div>
-
-          <form id="loginForm" class="accountForm">
+          <form id="loginForm" class="accountForm" hidden>
             <label>
               <span>Adresse email</span>
               <input id="loginEmail" name="email" type="email" autocomplete="email" required placeholder="vous@entreprise.fr" disabled>
@@ -55,22 +50,29 @@
             <button id="forgotPasswordButton" class="authTextButton" type="button" disabled>Mot de passe oublié ?</button>
           </form>
 
-          <form id="registerForm" class="accountForm" hidden>
+          <form id="registerForm" class="accountForm" method="post" action="/api/account/register">
             <label>
               <span>Nom affiché</span>
-              <input id="registerName" name="displayName" type="text" autocomplete="name" required placeholder="Votre nom" disabled>
+              <input id="registerName" name="displayName" type="text" autocomplete="name" required maxlength="200" placeholder="Votre nom">
             </label>
             <label>
               <span>Adresse email</span>
-              <input id="registerEmail" name="email" type="email" autocomplete="email" required placeholder="vous@entreprise.fr" disabled>
+              <input id="registerEmail" name="email" type="email" autocomplete="email" required maxlength="320" placeholder="vous@entreprise.fr">
             </label>
             <label>
               <span>Mot de passe</span>
-              <input id="registerPassword" name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="8 caractères minimum" disabled>
+              <input id="registerPassword" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="256" required placeholder="8 caractères minimum">
             </label>
-            <button class="accountButton primary" type="submit" disabled>Création de compte bientôt disponible</button>
-            <p class="authHint">Votre compte démarre automatiquement en PMB Free.</p>
+            <button class="accountButton primary" id="registerSubmit" type="submit" disabled>Créer mon compte</button>
+            <p class="authHint">En créant un compte, vous pourrez vous connecter dans les logiciels PMB. <a href="legal.html">Politique de confidentialité</a>.</p>
           </form>
+
+          <section id="registerConfirmation" hidden aria-labelledby="registerConfirmationTitle">
+            <h3 id="registerConfirmationTitle" tabindex="-1">Compte créé</h3>
+            <p>Vous pouvez maintenant utiliser votre adresse email et votre mot de passe dans le plugin Revit ou la plateforme IFC.</p>
+            <a class="accountButton" href="downloads.html">Télécharger les logiciels</a>
+          </section>
+          <noscript><p>Activez JavaScript pour envoyer le formulaire.</p></noscript>
 
           <p class="accountSecurityNote">Votre mot de passe n'est jamais stocké sur ce site. L'authentification est assurée par le serveur PMB.</p>
         </article>
@@ -201,6 +203,6 @@
 
   <footer class="siteFooter"></footer>
   <script src="site-shell.js?v=20261002-account5"></script>
-  <script src="account.js?v=20261005-cloudflare1"></script>
+  <script src="account.js?v=20261125-register1"></script>
 </body>
 </html>
