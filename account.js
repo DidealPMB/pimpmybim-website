@@ -47,7 +47,7 @@ function renderFeatures(features){
 function renderDevices(devices){
   const root=$("deviceList");root.innerHTML="";
   const list=Array.isArray(devices)?devices:[];
-  if(!list.length){root.innerHTML='<div class="accountDeviceEmpty">Aucun appareil activé pour le moment.</div>';return}
+  if(!list.length){root.innerHTML='<div class="accountDeviceEmpty">Le détail des appareils n’est pas encore disponible. Consultez le compteur d’activations dans la vue d’ensemble.</div>';return}
   list.forEach(device=>{
     const active=Boolean(get(device,"isActive","IsActive"));
     const name=get(device,"machineName","MachineName")||"Appareil sans nom";
@@ -107,14 +107,7 @@ async function loadDashboard(){
     authorized("/api/account/me"),
     authorized("/api/account/entitlements")
   ]);
-  let devices=[];
-  try{
-    const result=await authorized("/api/account/devices");
-    devices=Array.isArray(result)?result:[]
-  }catch(err){
-    console.warn("PMB account devices unavailable",err)
-  }
-  renderDashboard(profile,ent,devices)
+  renderDashboard(profile,ent,[])
 }
 async function authenticate(path,payload){
   const data=await request(path,{method:"POST",body:JSON.stringify(payload)});
@@ -143,7 +136,7 @@ function renderPlanState(){
     card.classList.toggle("current",current);
     const badge=card.querySelector(".accountPlanCurrent");if(badge)badge.hidden=!current;
     const button=card.querySelector(".choosePlanButton");
-    if(button){button.disabled=current;button.textContent=current?"Plan actuel":code==="FREE"?"Passer à IFC Viewer":code==="PRO"?"Choisir IFC Control":"Choisir IFC Pro"}
+    if(button){button.disabled=true;button.textContent=current?"Plan actuel":"Offre bientôt disponible"}
   })
 }
 function renderBillingCycle(){
@@ -190,7 +183,7 @@ $("logoutButton")?.addEventListener("click",async()=>{
 });
 $("billingMonthly")?.addEventListener("click",()=>{billingCycle="monthly";renderBillingCycle()});
 $("billingYearly")?.addEventListener("click",()=>{billingCycle="yearly";renderBillingCycle()});
-document.querySelectorAll(".choosePlanButton").forEach(button=>button.addEventListener("click",()=>choosePlan(button.dataset.plan)));
+
 renderBillingCycle();switchAuth("login");
 
 (async function boot(){
