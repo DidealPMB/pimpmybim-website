@@ -38,6 +38,20 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    if (url.pathname === "/account-config.js" && request.method === "GET") {
+      const siteKey = typeof env.TURNSTILE_SITE_KEY === "string" ? env.TURNSTILE_SITE_KEY : "";
+      return new Response(
+        "window.PMB_ACCOUNT_CONFIG = Object.freeze({ turnstileSiteKey: " + JSON.stringify(siteKey) + " });",
+        {
+          headers: {
+            "Content-Type": "application/javascript; charset=utf-8",
+            "Cache-Control": "no-store",
+            "X-Content-Type-Options": "nosniff",
+          },
+        },
+      );
+    }
+
     if (isAccountApi(url.pathname)) {
       try {
         return await proxyAccountRequest(request);
