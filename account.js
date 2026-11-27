@@ -1,6 +1,10 @@
 (()=>{"use strict";
 const API="";
 const SESSION_KEY="pmb-account-web-session-v1";
+let turnstileWidgetId=null;
+let turnstileToken="";
+let turnstileAction="";
+let turnstileLoadPromise=null;
 const $=id=>document.getElementById(id);
 const authView=$("authView"),dashboardView=$("dashboardView"),guestHero=$("guestHero"),notice=$("accountNotice");
 let session=loadSession();
@@ -15,6 +19,53 @@ function get(obj,...keys){for(const k of keys){if(obj&&obj[k]!==undefined)return
 function showNotice(message,type=""){notice.textContent=message;notice.className="accountNotice"+(type?" "+type:"");notice.hidden=false}
 function clearNotice(){notice.hidden=true;notice.textContent="";notice.className="accountNotice"}
 function setBusy(el,busy){el?.classList.toggle("accountBusy",busy)}
+function loadTurnstile(){
+  const siteKey=window.PMB_ACCOUNT_CONFIG?.turnstileSiteKey||"";
+  if(!siteKey)return Promise.reject(new Error("La protection anti-robot du site n'est pas encore configurée."));
+  if(window.turnstile)return Promise.resolve();
+  if(!turnstileLoadPromise){
+    turnstileLoadPromise=new Promise((resolve,reject)=>{
+      const script=document.createElement("script");
+      script.src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+      script.async=true;script.defer=true;
+      script.onload=()=>window.turnstile?resolve():reject(new Error("Cloudflare Turnstile n'a pas pu démarrer."));
+      script.onerror=()=>reject(new Error("Le service anti-robot Cloudflare est inaccessible."));
+      document.head.appendChild(script)
+    })
+  }
+  return turnstileLoadPromise
+}
+function setTurnstileMode(mode){
+  turnstileAction=mode;turnstileToken="";
+  const section=$("turnstileSection");
+  if(!section)return;
+  section.hidden=!mode;
+  if(!mode){
+    if(window.turnstile&&turnstileWidgetId!==null)window.turnstile.reset(turnstileWidgetId);
+    return
+  }
+  $("turnstileHelp").textContent=mode==="register"
+    ?"Confirmez que vous êtes une personne pour créer votre compte."
+    :"Confirmez que vous êtes une personne pour demander un nouveau lien.";
+  loadTurnstile().then(()=>{
+    if(turnstileWidgetId!==null){window.turnstile.reset(turnstileWidgetId);return}
+    turnstileWidgetId=window.turnstile.render("#turnstileWidget",{
+      sitekey:window.PMB_ACCOUNT_CONFIG.turnstileSiteKey,
+      callback:value=>{turnstileToken=value},
+      "expired-callback":()=>{turnstileToken=""},
+      "error-callback":()=>{turnstileToken="";showNotice("La vérification anti-robot a échoué. Réessayez.","error")}
+    })
+  }).catch(error=>showNotice(error.message,"error"))
+}
+function currentTurnstileToken(){
+  return window.turnstile&&turnstileWidgetId!==null
+    ?window.turnstile.getResponse(turnstileWidgetId)
+    :turnstileToken
+}
+function resetTurnstile(){
+  turnstileToken="";
+  if(window.turnstile&&turnstileWidgetId!==null)window.turnstile.reset(turnstileWidgetId)
+}
 function showGuest(){guestHero.hidden=false;authView.hidden=false;dashboardView.hidden=true}
 function showAccount(){guestHero.hidden=true;authView.hidden=true;dashboardView.hidden=false}
 async function parseResponse(res){const text=await res.text();if(!text)return null;try{return JSON.parse(text)}catch{return {message:text}}}
@@ -123,7 +174,9 @@ function switchAuth(mode){
   $("showLogin").setAttribute("aria-selected",String(login));
   $("showRegister").setAttribute("aria-selected",String(!login));
   $("authTitle").textContent=login?"Connexion":"Créer un compte";
-  $("authSubtitle").textContent=login?"Retrouvez vos licences, appareils et droits PMB.":"Créez votre compte PMB Free en quelques secondes."
+  $("authSubtitle").textContent=login?"Retrouvez vos licences, appareils et droits PMB.":"Créez votre compte PMB Free en quelques secondes.";
+  if(login)$("resendVerificationButton").hidden=true;
+  setTurnstileMode(login?"":"register")
 }
 function activatePanel(name){
   document.querySelectorAll(".accountMenuItem").forEach(btn=>btn.classList.toggle("active",btn.dataset.section===name));
@@ -158,15 +211,59 @@ $("forgotPasswordButton")?.addEventListener("click",()=>showNotice("La récupér
 $("loginForm")?.addEventListener("submit",async e=>{
   e.preventDefault();clearNotice();setBusy(authView,true);
   try{await authenticate("/api/account/login",{email:$("loginEmail").value.trim(),password:$("loginPassword").value})}
-  catch(err){showNotice(err.status===401?"Email ou mot de passe incorrect.":err.message,"error")}
+  catch(err){
+    const code=get(err.data,"code","Code");
+    if(err.status===403&&code==="EMAIL_NOT_VERIFIED"){
+      $("resendVerificationButton").hidden=false;
+      showNotice("Cette adresse n'est pas encore vérifiée. Consultez votre boîte mail ou demandez un nouveau lien.","error")
+    }else showNotice(err.status===401?"Email ou mot de passe incorrect.":err.message,"error")
+  }
   finally{setBusy(authView,false)}
 });
 $("registerForm")?.addEventListener("submit",async e=>{
-  e.preventDefault();clearNotice();setBusy(authView,true);
+  e.preventDefault();clearNotice();
+  const captchaToken=currentTurnstileToken();
+  if(!captchaToken){
+    setTurnstileMode("register");
+    showNotice("Complétez la vérification anti-robot avant de créer votre compte.","error");
+    return
+  }
+  setBusy(authView,true);
   try{
-    await authenticate("/api/account/register",{displayName:$("registerName").value.trim(),email:$("registerEmail").value.trim(),password:$("registerPassword").value});
-    showNotice("Compte créé. Votre accès PMB Free est actif.","success")
-  }catch(err){showNotice(err.status===409?"Un compte existe déjà avec cette adresse email.":err.message,"error")}
+    const result=await request("/api/account/register",{
+      method:"POST",
+      body:JSON.stringify({
+        displayName:$("registerName").value.trim(),
+        email:$("registerEmail").value.trim(),
+        password:$("registerPassword").value,
+        turnstileToken:captchaToken
+      })
+    });
+    saveSession(null);switchAuth("login");
+    showNotice(result.message||"Si cette adresse peut être vérifiée, un lien vient d'être envoyé. Consultez votre boîte mail.","success")
+  }catch(err){showNotice(err.message,"error");resetTurnstile()}
+  finally{setBusy(authView,false)}
+});
+$("resendVerificationButton")?.addEventListener("click",async()=>{
+  clearNotice();
+  const email=$("loginEmail").value.trim();
+  if(!email){showNotice("Saisissez votre adresse e-mail dans le champ de connexion.","error");$("loginEmail").focus();return}
+  if(turnstileAction!=="resend"){
+    setTurnstileMode("resend");
+    showNotice("Complétez la vérification anti-robot, puis cliquez à nouveau sur « Renvoyer le lien ».","");
+    return
+  }
+  const captchaToken=currentTurnstileToken();
+  if(!captchaToken){showNotice("Complétez la vérification anti-robot avant de demander un nouveau lien.","error");return}
+  setBusy(authView,true);
+  try{
+    const result=await request("/api/account/email/resend",{
+      method:"POST",
+      body:JSON.stringify({email,turnstileToken:captchaToken})
+    });
+    showNotice(result.message||"Si cette adresse peut être vérifiée, un lien vient d'être envoyé.","success");
+    resetTurnstile()
+  }catch(err){showNotice(err.message,"error");resetTurnstile()}
   finally{setBusy(authView,false)}
 });
 document.querySelectorAll(".accountMenuItem").forEach(btn=>btn.addEventListener("click",()=>activatePanel(btn.dataset.section)));
@@ -186,7 +283,25 @@ $("billingYearly")?.addEventListener("click",()=>{billingCycle="yearly";renderBi
 
 renderBillingCycle();switchAuth("login");
 
+async function handleVerificationLink(){
+  const params=new URLSearchParams(location.search);
+  const verificationToken=params.get("verify");
+  if(!verificationToken)return false;
+  history.replaceState(null,"",location.pathname+location.hash);
+  saveSession(null);showGuest();switchAuth("login");setBusy(authView,true);
+  try{
+    const result=await request("/api/account/email/verify",{
+      method:"POST",
+      body:JSON.stringify({token:verificationToken})
+    });
+    showNotice(result.message||"Adresse vérifiée. Vous pouvez maintenant vous connecter.","success")
+  }catch(err){showNotice(err.message,"error")}
+  finally{setBusy(authView,false)}
+  return true
+}
+
 (async function boot(){
+  if(await handleVerificationLink())return;
   if(!session){showGuest();return}
   try{await loadDashboard()}
   catch{saveSession(null);showGuest();showNotice("Votre session a expiré. Connectez-vous à nouveau.","error")}

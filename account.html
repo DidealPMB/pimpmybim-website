@@ -42,6 +42,11 @@
             <button id="showRegister" class="authTab" type="button" role="tab" aria-selected="false">Créer un compte</button>
           </div>
 
+          <div id="turnstileSection" class="turnstileSection" hidden>
+            <p id="turnstileHelp" class="authHint">Vérification anti-robot Cloudflare.</p>
+            <div id="turnstileWidget"></div>
+          </div>
+
           <form id="loginForm" class="accountForm">
             <label>
               <span>Adresse email</span>
@@ -53,6 +58,7 @@
             </label>
             <button class="accountButton primary" type="submit">Se connecter</button>
             <button id="forgotPasswordButton" class="authTextButton" type="button" disabled>Mot de passe oublié ?</button>
+            <button id="resendVerificationButton" class="authTextButton" type="button" hidden>Renvoyer le lien de vérification</button>
           </form>
 
           <form id="registerForm" class="accountForm" hidden>
@@ -69,7 +75,7 @@
               <input id="registerPassword" name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="8 caractères minimum">
             </label>
             <button class="accountButton primary" type="submit">Créer mon compte gratuit</button>
-            <p class="authHint">Votre compte démarre automatiquement en PMB Free.</p>
+            <p class="authHint">Votre compte démarre en PMB Free. Vous devrez confirmer votre adresse e-mail avant de vous connecter.</p>
           </form>
 
           <p class="accountSecurityNote">Votre mot de passe n'est jamais stocké sur ce site. L'authentification est assurée par le serveur PMB.</p>
@@ -201,6 +207,7 @@
 
   <footer class="siteFooter"></footer>
   <script src="site-shell.js?v=20261002-account5"></script>
-  <script src="account.js?v=20261126-free-account1"></script>
+  <script src="/account-config.js"></script>
+  <script src="account.js?v=20261127-email-verification1"></script>
 </body>
 </html>
